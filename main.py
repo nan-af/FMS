@@ -11,7 +11,7 @@ engine = create_engine(Path("db_connection").read_text(), echo=True)
 async def root():
     return {"message": "Hello World"}
 
-
+#Case 1: view all accounts
 @app.get("/accounts")
 async def accounts():
     with engine.connect() as con:
@@ -19,7 +19,8 @@ async def accounts():
         select * from accounts"""))
     return {"message": list(accounts)}
 
-
+  
+#Case 2: view all transactions
 @app.get("/account/{account_id}")
 async def txns_for_account(account_id):
     with engine.connect() as con:
@@ -36,3 +37,4 @@ async def transactions():
         transactions = con.execute(text("""
         select * from transactions"""))
     return {"message": list(transactions)}
+
