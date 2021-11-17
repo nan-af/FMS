@@ -11,18 +11,19 @@ engine = create_engine(Path("db_connection").read_text(), echo=True)
 async def root():
     return {"message": "Hello World"}
 
-
+#Case 1: view all accounts
 @app.get("/accounts")
-async def cust():
+async def accounts():
     with engine.connect() as con:
         accounts = con.execute(text("""
         select * from accounts"""))
     return {"message": list(accounts)}
 
-
+#Case 2: view all transactions
 @app.get("/transactions")
 async def add_cust():
     with engine.connect() as con:
         transactions = con.execute(text("""
         select * from transactions"""))
     return {"message": list(transactions)}
+
