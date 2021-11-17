@@ -19,8 +19,7 @@ async def accounts():
         select * from accounts"""))
     return {"message": list(accounts)}
 
-  
-#Case 2: view all transactions
+#Case 2: view all transactions of a specific account
 @app.get("/account/{account_id}")
 async def txns_for_account(account_id):
     with engine.connect() as con:
@@ -31,6 +30,8 @@ async def txns_for_account(account_id):
     return {"message": list(txns)}
 
 
+
+#Case 3: view all transactions
 @app.get("/transactions")
 async def transactions():
     with engine.connect() as con:
