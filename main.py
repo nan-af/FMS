@@ -19,9 +19,20 @@ async def accounts():
         select * from accounts"""))
     return {"message": list(accounts)}
 
-#Case 2: view all transactions
+#Case 2: view all transactions of a specific account
+@app.get("/account/{account_id}")
+async def txns_for_account(account_id):
+    with engine.connect() as con:
+        txns = con.execute(text("""
+        select * from transactions
+        where from_account = :acc_id
+        or to_account = :acc_id"""), acc_id=account_id)
+    return {"message": list(txns)}
+
+
+#Case 3: view all transactions
 @app.get("/transactions")
-async def add_cust():
+async def transactions():
     with engine.connect() as con:
         transactions = con.execute(text("""
         select * from transactions"""))
