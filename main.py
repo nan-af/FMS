@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
 app = FastAPI()
-engine = create_engine("postgresql:///FMS", echo=True)
+engine = create_engine(Path("db_connection").read_text(), echo=True)
 
 
 @app.get("/")
