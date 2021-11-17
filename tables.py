@@ -5,13 +5,19 @@ engine = create_engine("postgresql:///FMS", echo=True)
 with engine.connect() as con:
     con.execute(text("""
     create table accounts(
-        account_number serial primary key,
+        account_id serial primary key,
         opening_balance numeric
     )"""))
 
     con.execute(text("""
-    create table transaction(
+    create table transactions(
         tr_id serial primary key,
         amount numeric,
-        tr_date date
+        tr_date date,
+        from_account integer not null,
+        to_account integer not null,
+
+        foreign key(from_account, to_account)
+        references accounts(account_id)
+        on update cascade
     )"""))
