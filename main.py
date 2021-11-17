@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
+from pathlib import Path
 
 app = FastAPI()
 engine = create_engine(Path("db_connection").read_text(), echo=True)
