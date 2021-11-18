@@ -39,3 +39,31 @@ async def transactions():
         select * from transactions"""))
     return {"message": list(transactions)}
 
+
+#Case 4: view all employees
+@app.get("/employees")
+async def employees():
+    with engine.connect() as con:
+        employees = con.execute(text("""
+        select * from employees"""))
+    return {"message": list(employees)}
+
+
+#Case 5: view all vendors
+@app.get("/vendors")
+async def vendors():
+    with engine.connect() as con:
+        vendors = con.execute(text("""
+        select * from vendors"""))
+    return {"message": list(vendors)}
+
+
+#Case 5: view all customers
+@app.get("/customers")
+async def customers():
+    with engine.connect() as con:
+        customers = con.execute(text("""
+        select * from customers"""))
+    return {"message": list(customers)}
+
+
