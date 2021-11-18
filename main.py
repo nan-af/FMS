@@ -11,7 +11,8 @@ engine = create_engine(Path("db_connection").read_text(), echo=True)
 async def root():
     return {"message": "Hello World"}
 
-#Case 1: view all accounts
+
+# Case 1: view all accounts
 @app.get("/accounts")
 async def accounts():
     with engine.connect() as con:
@@ -19,7 +20,8 @@ async def accounts():
         select * from accounts"""))
     return {"message": list(accounts)}
 
-#Case 2: view all transactions of a specific account
+
+# Case 2: view all transactions of a specific account
 @app.get("/account/{account_id}")
 async def txns_for_account(account_id):
     with engine.connect() as con:
@@ -30,7 +32,7 @@ async def txns_for_account(account_id):
     return {"message": list(txns)}
 
 
-#Case 3: view all transactions
+# Case 3: view all transactions
 @app.get("/transactions")
 async def transactions():
     with engine.connect() as con:
@@ -38,7 +40,8 @@ async def transactions():
         select * from transactions"""))
     return {"message": list(transactions)}
 
-#Case 4: view all employees
+
+# Case 4: view all employees
 @app.get("/employees")
 async def employees():
     with engine.connect() as con:
@@ -47,7 +50,7 @@ async def employees():
     return {"message": list(employees)}
 
 
-#Case 5: view all vendors
+# Case 5: view all vendors
 @app.get("/vendors")
 async def vendors():
     with engine.connect() as con:
@@ -56,7 +59,7 @@ async def vendors():
     return {"message": list(vendors)}
 
 
-#Case 5: view all customers
+# Case 5: view all customers
 @app.get("/customers")
 async def customers():
     with engine.connect() as con:
@@ -65,7 +68,7 @@ async def customers():
     return {"message": list(customers)}
 
 
-#Case 7: view employee Attendance
+# Case 7: view employee Attendance
 @app.get("/attendance")
 async def attendance():
     with engine.connect() as con:
@@ -73,9 +76,9 @@ async def attendance():
         select * from attendance"""))
     return {"message": list(attendance)}
 
-#Case 8: view employee salary
 
-#Case 9: view employee advance
+# Case 8: view employee salary
 
-#Case 10: insert employee attendance  
+# Case 9: view employee advance
 
+# Case 10: insert employee attendance
