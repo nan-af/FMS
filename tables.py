@@ -43,3 +43,49 @@ with engine.connect() as con:
         references accounts(account_id)
         on update cascade
     )"""))
+
+    #creates EMPLOYEE table
+    con.execute(text("""
+    create table employee(
+    	employee_id serial primary key,
+    	name char,
+    	address varchar(30),
+    	phone_number varchar(15),
+    	hourly_wage numeric,
+    	account_id serial
+    )"""))
+
+    #creates VENDOR table
+    con.execute(text("""
+    create table vendor(
+    	vendor_id serial primary key,
+    	name char,
+    	address varchar(30),
+    	phone_number varchar(15),
+    	account_id serial
+    )"""))
+
+    #creates CUSTOMER table
+    con.execute(text("""
+    create table customer(
+    	customer_id serial primary key,
+    	name char,
+    	address varchar(30),
+    	phone_number varchar(15),
+    	account_id serial
+    )"""))
+
+    #creates ATTENDANCE table
+    con.execute(text("""
+    create table attendance(
+    	date_today date primary key,
+    	employee_id serial,
+    	time_in time not null,
+    	time_out time not null,
+    	leave ,
+    	break_hours int 
+
+    	foreign key(employee_id)
+        references accounts(employee)
+        on update cascade
+    )"""))
