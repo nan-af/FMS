@@ -6,20 +6,20 @@ engine = create_engine(Path("db_connection").read_text(), echo=True)
 with engine.connect() as con:
 
     # updates closing_balance
-    con.execute(text("""
-    create trigger update_account
-        after Insert
-        on transactions
-        Begin
-            update table account
-            set accounts.closing_balance = accounts.closing_balance + new.amount
-            where account_id = new.from_account
+    # con.execute(text("""
+    # create trigger update_account
+    #     after Insert
+    #     on transactions
+    #     Begin
+    #         update table account
+    #         set accounts.closing_balance = accounts.closing_balance + new.amount
+    #         where account_id = new.from_account
 
-            update table account
-            set accounts.closing_balance = accounts.closing_balance - new.amount
-            where account_id = new.to_account
-        End	
-    )"""))
+    #         update table account
+    #         set accounts.closing_balance = accounts.closing_balance - new.amount
+    #         where account_id = new.to_account
+    #     End
+    # )"""))
 
     # creates ACCOUNTS table
     con.execute(text("""
@@ -38,7 +38,10 @@ with engine.connect() as con:
         from_account integer not null,
         to_account integer not null,
 
-        foreign key(from_account, to_account)
+        foreign key(from_account)
+        references accounts(account_id)
+        on update cascade,
+        foreign key(to_account)
         references accounts(account_id)
         on update cascade
     )"""))
@@ -51,7 +54,11 @@ with engine.connect() as con:
         address varchar(30),
         phone_number varchar(15),
         hourly_wage numeric,
-        account_id serial
+        account_id integer not null,
+
+        foreign key(account_id)
+        references accounts(account_id)
+        on update cascade
     )"""))
 
     # creates VENDOR table
@@ -61,7 +68,11 @@ with engine.connect() as con:
         name char,
         address varchar(30),
         phone_number varchar(15),
-        account_id serial
+        account_id integer not null,
+
+        foreign key(account_id)
+        references accounts(account_id)
+        on update cascade
     )"""))
 
     # creates CUSTOMER table
@@ -71,7 +82,11 @@ with engine.connect() as con:
         name char,
         address varchar(30),
         phone_number varchar(15),
-        account_id serial
+        account_id integer not null,
+
+        foreign key(account_id)
+        references accounts(account_id)
+        on update cascade
     )"""))
 
     # creates ATTENDANCE table
@@ -81,10 +96,10 @@ with engine.connect() as con:
         employee_id serial,
         time_in time not null,
         time_out time not null,
-        leave ,
-        break_hours int 
+        leave boolean,
+        break_hours int,
 
         foreign key(employee_id)
-        references accounts(employee)
+        references employee(employee_id)
         on update cascade
     )"""))
