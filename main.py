@@ -30,7 +30,6 @@ async def txns_for_account(account_id):
     return {"message": list(txns)}
 
 
-
 #Case 3: view all transactions
 @app.get("/transactions")
 async def transactions():
@@ -38,4 +37,45 @@ async def transactions():
         transactions = con.execute(text("""
         select * from transactions"""))
     return {"message": list(transactions)}
+
+#Case 4: view all employees
+@app.get("/employees")
+async def employees():
+    with engine.connect() as con:
+        employees = con.execute(text("""
+        select * from employees"""))
+    return {"message": list(employees)}
+
+
+#Case 5: view all vendors
+@app.get("/vendors")
+async def vendors():
+    with engine.connect() as con:
+        vendors = con.execute(text("""
+        select * from vendors"""))
+    return {"message": list(vendors)}
+
+
+#Case 5: view all customers
+@app.get("/customers")
+async def customers():
+    with engine.connect() as con:
+        customers = con.execute(text("""
+        select * from customers"""))
+    return {"message": list(customers)}
+
+
+#Case 7: view employee Attendance
+@app.get("/attendance")
+async def attendance():
+    with engine.connect() as con:
+        attendance = con.execute(text("""
+        select * from attendance"""))
+    return {"message": list(attendance)}
+
+#Case 8: view employee salary
+
+#Case 9: view employee advance
+
+#Case 10: insert employee attendance  
 
