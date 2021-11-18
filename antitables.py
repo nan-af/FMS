@@ -7,4 +7,14 @@ Type "yes" to continue: """) == "yes"
 engine = create_engine("postgresql:///FMS", echo=True)
 with engine.connect() as con:
     con.execute(text("""
-    drop table *"""))
+    DROP TABLE public.accounts CASCADE;
+
+    DROP TABLE public.attendance CASCADE;
+
+    DROP TABLE public.customer CASCADE;
+
+    DROP TABLE public.employee CASCADE;
+
+    DROP TABLE public.transactions CASCADE;
+
+    DROP TABLE public.vendor CASCADE;"""))
