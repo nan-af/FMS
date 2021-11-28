@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from pathlib import Path
@@ -9,7 +10,7 @@ engine = create_engine(Path("db_connection").read_text(), echo=True)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return HTMLResponse(Path("frontend/index.html").read_text())
 
 
 # Case 1: view all accounts
@@ -77,7 +78,7 @@ async def attendance():
     return {"message": list(attendance)}
 
 
-#Case 8: view employee salary
+# Case 8: view employee salary
 @app.get("/salary")
 async def salary(employee_id):
     with engine.connect() as con:
@@ -88,27 +89,28 @@ async def salary(employee_id):
     return {"message": list(salary)}
 
 
-
-#Case 9: view employee advance
+# Case 9: view employee advance
 @app.get("/advance")
 async def advance(employee_id):
     with engine.connect() as con:
         advance = con.execute(text("""
         select amount from transaction, advance
         where advance.employee_id = :emp_id
-        """), emp_id = employee_id)
+        """), emp_id=employee_id)
     return {"message": list(advance)}
 
-# Case 10: insert employee attendance
-@app.post(“/attendance”)
-async def attendance (employee_id, date,time_in,time_out, leave, break_hours):
-with engine.connect() as con:
-        attendance = con.execute(text("""
-        INSERT INTO attendance VALUES 
-(employee_id, date,time_in,time_out, leave, break_hours)"""))
-    return {"message": “Employee attendance updated”}
 
-# 11 View customer accounts 
+# Case 10: insert employee attendance
+@app.post("/attendance")
+async def attendance(employee_id, date, time_in, time_out, leave, break_hours):
+    with engine.connect() as con:
+        attendance = con.execute(text("""
+        INSERT INTO attendance VALUES
+        (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
+        """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+    return {"message": "Employee attendance updated"}
+
+# 11 View customer accounts
 # 12 view stock
 # 13 view income
 # 14 view leaves

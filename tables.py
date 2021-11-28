@@ -171,8 +171,6 @@ with engine.connect() as con:
 
     )"""))
 
-
-
     # creates ORDER table
     con.execute(text("""
     create table order(
