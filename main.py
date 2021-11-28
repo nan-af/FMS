@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from pathlib import Path
@@ -9,7 +10,7 @@ engine = create_engine(Path("db_connection").read_text(), echo=True)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return HTMLResponse(Path("frontend/index.html").read_text())
 
 
 # Case 1: view all accounts
