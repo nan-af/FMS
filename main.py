@@ -79,7 +79,7 @@ async def attendance():
 
 
 # Case 8: view employee salary
-@app.get("/salary")
+@app.get("/salary/{employee_id}")
 async def salary(employee_id):
     with engine.connect() as con:
         salary = con.execute(text("""
@@ -90,7 +90,7 @@ async def salary(employee_id):
 
 
 # Case 9: view employee advance
-@app.get("/advance")
+@app.get("/advance/{employee_id}")
 async def advance(employee_id):
     with engine.connect() as con:
         advance = con.execute(text("""
