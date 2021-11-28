@@ -93,7 +93,8 @@ with engine.connect() as con:
     con.execute(text("""
     create table attendance(
         date_today date primary key,
-        employee_id serial,
+        employee_id integer not null,
+        transaction_id integer not null,
         time_in time not null,
         time_out time not null,
         leave boolean,
@@ -101,6 +102,10 @@ with engine.connect() as con:
 
         foreign key(employee_id)
         references employee(employee_id)
+        on update cascade,
+
+        foreign key(transaction_id)
+        references transactions(tr_id)
         on update cascade
     )"""))
 
@@ -113,74 +118,93 @@ with engine.connect() as con:
         total_weight numeric,
         received_date date,
         use_date date,
-        type 
+        type varchar(30)
     )"""))
 
     # creates PURCHASED FROM table
     con.execute(text("""
     create table purchased(
-        stock_id serial, primary key,
-        vendor_id serial,
-        transaction_id serial,
-        PRIMARY KEY(stock_id, vendor_id, transaction_id)
+        stock_id integer not null,
+        vendor_id integer not null,
+        transaction_id integer not null,
 
+        PRIMARY KEY(stock_id, vendor_id, transaction_id),
+
+        foreign key(stock_id)
+        references stock(stock_id)
+        on update cascade,
+
+        foreign key(vendor_id)
+        references vendor(vendor_id)
+        on update cascade,
+
+        foreign key(transaction_id)
+        references transactions(tr_id)
+        on update cascade
     )"""))
 
     # creates ALLOWANCE table
     con.execute(text("""
     create table allowance(
-        type varchar(30)
-
-    )"""))
-
-    # creates UTILISED table
-    con.execute(text("""
-    create table utilised(
         type varchar(30),
-        employee_id serial,
-        transaction_id serial,
-        PRIMARY KEY(type, employee_id, transaction_id)
+        employee_id integer not null,
+        transaction_id integer not null primary key,
 
+        foreign key(transaction_id)
+        references transactions(tr_id)
+        on update cascade,
+
+        foreign key(employee_id)
+        references employee(employee_id)
+        on update cascade
     )"""))
+
+    # # creates UTILISED table
+    # con.execute(text("""
+    # create table utilised(
+    #     employee_id integer not null,
+    #     transaction_id integer not null,
+    #     PRIMARY KEY(employee_id, transaction_id)
+    # )"""))
 
     # creates E_AT table
-    con.execute(text("""
-    create table e_at(
-        date_today date primary key,
-        employee_id serial,
-        transaction_id serial,
-        PRIMARY KEY(date_today, employee_id, transaction_id)
-
-    )"""))
+    # con.execute(text("""
+    # create table e_at(
+    #     date_today date,
+    #     employee_id integer not null,
+    #     transaction_id integer not null,
+    #     PRIMARY KEY(date_today, employee_id, transaction_id)
+    # )"""))
 
     # creates ADVANCE table
     con.execute(text("""
     create table advance(
+        date_today date,
+        transaction_id integer not null primary key,
+        employee_id integer not null,
 
-    foreign key(transaction_id) 
-    references transactions(transaction_id)
-    on update cascade,
+        foreign key(transaction_id) 
+        references transactions(tr_id)
+        on update cascade,
 
-    foreign key(employee_id) 
-    references employee(employee_id)
-    on update cascade,
-
-    date_today date,
-    PRIMARY KEY(transaction_id)
-        
-
+        foreign key(employee_id) 
+        references employee(employee_id)
+        on update cascade
     )"""))
 
     # creates ORDER table
     con.execute(text("""
-    create table order(
+    create table orders(
         order_id serial primary key,
-        quantity int,
+        transaction_id integer not null,
+        customer_id integer not null,
+        stock_id integer not null,
+        quantity integer,
         item_name varchar(15),
-        due date date,
+        due_date date,
 
         foreign key(transaction_id) 
-        references transactions(transaction_id)
+        references transactions(tr_id)
         on update cascade,
 
         foreign key(customer_id) 
