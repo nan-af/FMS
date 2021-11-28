@@ -78,8 +78,44 @@ async def attendance():
     return {"message": list(attendance)}
 
 
-# Case 8: view employee salary
+#Case 8: view employee salary
+@app.get("/salary")
+async def salary(employee_id):
+    with engine.connect() as con:
+        salary = con.execute(text("""
+        select hourly_wage from employee
+        where employee_id = :emp_id
+        """), emp_id=employee_id)
+    return {"message": list(salary)}
 
-# Case 9: view employee advance
+
+
+#Case 9: view employee advance
+@app.get("/advance")
+async def advance(employee_id):
+    with engine.connect() as con:
+        advance = con.execute(text("""
+        select amount from transaction, advance
+        where advance.employee_id = :emp_id
+        """), emp_id = employee_id)
+    return {"message": list(advance)}
 
 # Case 10: insert employee attendance
+@app.post(“/attendance”)
+async def attendance (employee_id, date,time_in,time_out, leave, break_hours):
+with engine.connect() as con:
+        attendance = con.execute(text("""
+        INSERT INTO attendance VALUES 
+(employee_id, date,time_in,time_out, leave, break_hours)"""))
+    return {"message": “Employee attendance updated”}
+
+# 11 View customer accounts 
+# 12 view stock
+# 13 view income
+# 14 view leaves
+# 15 add new item in inventory
+# 16 remove item from inventory
+# 17 calculate employee wage
+# 18 view orders
+# 19 input transaction
+# 20 view one customers account
