@@ -9,14 +9,25 @@ Type "yes" to continue: """) == "yes"
 engine = create_engine(Path("db_connection").read_text(), echo=True)
 with engine.connect() as con:
     con.execute(text("""
-    DROP TABLE if exists public.accounts CASCADE;
+    DROP TABLE IF EXISTS public.accounts CASCADE;
 
-    DROP TABLE if exists public.attendance CASCADE;
+    DROP TABLE IF EXISTS public.advance CASCADE;
 
-    DROP TABLE if exists public.customer CASCADE;
+    DROP TABLE IF EXISTS public.allowance CASCADE;
 
-    DROP TABLE if exists public.employee CASCADE;
+    DROP TABLE IF EXISTS public.attendance CASCADE;
 
-    DROP TABLE if exists public.transactions CASCADE;
+    DROP TABLE IF EXISTS public.customer CASCADE;
 
-    DROP TABLE if exists public.vendor CASCADE;"""))
+    DROP TABLE IF EXISTS public.employee CASCADE;
+
+    DROP TABLE IF EXISTS public.orders CASCADE;
+
+    DROP TABLE IF EXISTS public.purchased CASCADE;
+
+    DROP TABLE IF EXISTS public.stock CASCADE;
+
+    DROP TABLE IF EXISTS public.transactions CASCADE;
+
+    DROP TABLE IF EXISTS public.vendor CASCADE;
+    """))
