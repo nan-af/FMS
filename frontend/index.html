@@ -1,0 +1,69 @@
+<html>
+
+<head>
+	<title>FMS</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		function get_accounts() {
+			axios.get('/accounts')
+				.then(res => {
+					console.log(res.data.message)
+					document.getElementById('output').innerHTML = res.data.message
+				})
+				.catch(err => console.log(err))
+		}
+		function get_transactions() {
+			axios.get('/transactions')
+				.then(res => {
+					console.log(res.data.message)
+					document.getElementById('output').innerHTML = res.data.message
+				})
+				.catch(err => console.log(err))
+		}
+		function get_employees() {
+			axios.get('/employees')
+				.then(res => {
+					console.log(res.data.message)
+					document.getElementById('output').innerHTML = res.data.message
+				})
+				.catch(err => console.log(err))
+		}
+		function get_vendors() {
+			axios.get('/vendors')
+				.then(res => {
+					console.log(res.data.message)
+					document.getElementById('output').innerHTML = res.data.message
+				})
+				.catch(err => console.log(err))
+		}
+		function get_customers() {
+			axios.get('/customers')
+				.then(res => {
+					console.log(res.data.message)
+					document.getElementById('output').innerHTML = res.data.message
+				})
+				.catch(err => console.log(err))
+		}
+		function get_attendance() {
+			axios.get('/attendance')
+				.then(res => {
+					console.log(res.data.message)
+					document.getElementById('output').innerHTML = res.data.message
+				})
+				.catch(err => console.log(err))
+		}
+	</script>
+</head>
+
+<body>
+	<button onclick="get_accounts()">Get accounts</button>
+	<button onclick="get_transactions()">Get transactions</button>
+	<button onclick="get_employees()">Get employees</button>
+	<button onclick="get_vendors()">Get vendors</button>
+	<button onclick="get_customers()">Get customers</button>
+	<button onclick="get_attendance()">Get attendance</button>
+	<div id="form"></div>
+	<div id="output"></div>
+</body>
+
+</html>
