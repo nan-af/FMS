@@ -130,9 +130,17 @@ async def customer_accounts():
     with engine.connect() as con:
         accounts = con.execute(text("""
         select * from accounts
-        where id in ( select id from customer)
-        """))
+        where id in :customers
+        """),customers=getcustomers())
     return {"message": list(accounts)}
+
+@app.get("/customers")
+async def getcustomers():
+    with engine.connect() as con:
+        customersList = con.execute(text("""
+        select id from customers
+        """))
+    return customersList
 # 12 view stock easy, select * from stock
 @app.get("/stock")
 async def stock():
@@ -142,6 +150,14 @@ async def stock():
     return {"message": list(stock)}
 # 13 view income
 # 14 view leaves total - all taken leaves of an employee
+@app.get("/attendance")
+async def remainingLeaves(datefrom,dateto,employeeid,total):
+    with engine.connect() as con:
+        leaves = con.execute(text("""
+        select count(transaction_id) from attendance
+        where employee_id = :employeeid and date_today between :datefrom and :dateto
+         """),employeeid=employeeid,datefrom=datefrom,dateto=dateto)
+    return {"message": str(total-leaves)+" remaining for employee with employee id {employeeid}."}
 # 15 add new item in inventory update stock
 @app.post("/stock")
 async def update_stock(quentity, location,total_weight, rec_date, use_date,typ):
@@ -153,6 +169,7 @@ async def update_stock(quentity, location,total_weight, rec_date, use_date,typ):
     return {"message": "Stock record updated"}
 # 16 remove item from inventory 
 # 17 calculate employee wage income +/- overtime/undertime
+
 # 18 view orders select * from orders where status <> completed
 @app.get("/orders")
 async def orders():
