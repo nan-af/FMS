@@ -117,9 +117,19 @@ async def customer_accounts():
     with engine.connect() as con:
         accounts = con.execute(text("""
         select * from accounts
-        where id in ( select id from customer)
-        """))
+        where id in :customers
+        """),customers=getcustomers())
     return {"message": list(accounts)}
+
+  
+@app.get("/customers")
+async def getcustomers():
+    with engine.connect() as con:
+        customersList = con.execute(text("""
+        select id from customers
+        """))
+    return customersList
+  
 
 # 12 view stock easy, select * from stock
 @app.get("/stock")
@@ -131,7 +141,16 @@ async def stock():
 
 # 13 view income DONE AS CASE 8
 # 14 view leaves total - all taken leaves of an employee
+@app.get("/attendance")
+async def remainingLeaves(datefrom,dateto,employeeid,total):
+    with engine.connect() as con:
+        leaves = con.execute(text("""
+        select count(transaction_id) from attendance
+        where employee_id = :employeeid and date_today between :datefrom and :dateto
+         """),employeeid=employeeid,datefrom=datefrom,dateto=dateto)
+    return {"message": str(total-leaves)+" remaining for employee with employee id {employeeid}."}
 
+  
 # 15 add new item in inventory update stock
 @app.post("/add stock")
 async def update_stock(quentity, location,total_weight, rec_date, use_date,typ):
@@ -167,7 +186,7 @@ async def wage(employee_id):
         """), emp_id=employee_id)
         calculated_wage = wage * time_put
     return {"message": calculated_wage}
-
+  
 
 # 18 view orders select * from orders where status <> completed
 @app.get("/orders")
@@ -195,4 +214,3 @@ async def customer_account(account_id):
         select * from accounts
         where id =:acc_id  """),acc_id = account_id)
     return {"message": list(accounts)}
->>>>>>> origin/master
