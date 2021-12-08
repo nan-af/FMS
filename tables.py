@@ -92,9 +92,8 @@ with engine.connect() as con:
     # creates ATTENDANCE table
     con.execute(text("""
     create table attendance(
-        date_today date primary key,
         employee_id integer not null,
-        transaction_id integer not null,
+        transaction_id integer primary key,
         time_in time not null,
         time_out time not null,
         leave boolean,
@@ -113,12 +112,17 @@ with engine.connect() as con:
     con.execute(text("""
     create table stock(
         stock_id serial primary key,
+        owner integer,
         quantity int,
         location varchar(30),
         total_weight numeric,
         received_date date,
         use_date date,
-        type varchar(30)
+        type varchar(30),
+
+        foreign key(owner)
+        references customer(customer_id)
+        on update cascade
     )"""))
 
     # creates PURCHASED FROM table
@@ -179,7 +183,6 @@ with engine.connect() as con:
     # creates ADVANCE table
     con.execute(text("""
     create table advance(
-        date_today date,
         transaction_id integer not null primary key,
         employee_id integer not null,
 
@@ -198,7 +201,6 @@ with engine.connect() as con:
         order_id serial primary key,
         transaction_id integer not null,
         customer_id integer not null,
-        stock_id integer not null,
         quantity integer,
         item_name varchar(15),
         due_date date,
@@ -209,10 +211,22 @@ with engine.connect() as con:
 
         foreign key(customer_id) 
         references customer(customer_id)
+        on update cascade
+    )"""))
+
+    # creates WILL_USE table
+    con.execute(text("""
+    create table will_use(
+        order_id integer not null,
+        stock_id integer not null,
+
+        primary key(order_id, stock_id),
+
+        foreign key(order_id)
+        references orders(order_id)
         on update cascade,
 
-        foreign key(stock_id) 
+        foreign key(stock_id)
         references stock(stock_id)
         on update cascade
-        
     )"""))
