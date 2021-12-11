@@ -54,7 +54,7 @@ with engine.connect() as con:
         address varchar(30),
         phone_number varchar(15),
         hourly_wage numeric,
-        account_id integer not null,
+        account_id integer not null unique,
 
         foreign key(account_id)
         references accounts(account_id)
@@ -68,7 +68,7 @@ with engine.connect() as con:
         name char,
         address varchar(30),
         phone_number varchar(15),
-        account_id integer not null,
+        account_id integer not null unique,
 
         foreign key(account_id)
         references accounts(account_id)
@@ -82,7 +82,7 @@ with engine.connect() as con:
         name char,
         address varchar(30),
         phone_number varchar(15),
-        account_id integer not null,
+        account_id integer not null unique,
 
         foreign key(account_id)
         references accounts(account_id)
