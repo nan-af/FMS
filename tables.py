@@ -50,7 +50,7 @@ with engine.connect() as con:
     con.execute(text("""
     create table employee(
         employee_id serial primary key,
-        name char,
+        name varchar(15),
         address varchar(30),
         phone_number varchar(15),
         hourly_wage numeric,
@@ -65,7 +65,7 @@ with engine.connect() as con:
     con.execute(text("""
     create table vendor(
         vendor_id serial primary key,
-        name char,
+        name varchar(15),
         address varchar(30),
         phone_number varchar(15),
         account_id integer not null unique,
@@ -79,7 +79,7 @@ with engine.connect() as con:
     con.execute(text("""
     create table customer(
         customer_id serial primary key,
-        name char,
+        name varchar(15),
         address varchar(30),
         phone_number varchar(15),
         account_id integer not null unique,
