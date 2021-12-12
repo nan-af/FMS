@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.param_functions import Form
 from fastapi.responses import HTMLResponse
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -220,3 +221,33 @@ async def customer_account(account_id):
         select * from accounts
         where id =:acc_id  """), acc_id=account_id)
     return {"message": list(accounts)}
+
+
+# 21 create new customer/vendor/employee
+@app.post("/create")
+async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=None):
+    if role in {'customer', 'vendor', 'employee'}:
+        with engine.begin() as con:
+            id = con.execute(text(f'''
+                with new_id as (
+                    insert into accounts (opening_balance, closing_balance)
+                    values (:ob, :ob)
+                    returning account_id
+                )
+                insert into {role} (name, address, phone_number, account_id)
+                values (:name, :address, :phone, (select * from new_id)) returning account_id;
+                '''), name=name, address=address, phone=phone, ob=opening_balance)
+
+            id = id.first()[0]
+
+            if hourly_wage is not None:
+                con.execute(text('''
+                    update employee
+                    set hourly_wage = :hw
+                    where account_id = :id
+                    ))'''), hw=hourly_wage, id=id)
+
+        return {'message': f'Successfully created {role} {name} with account number {id}.'}
+
+    else:
+        return {'error': 'Invalid type of person.'}
