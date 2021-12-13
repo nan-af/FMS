@@ -9,7 +9,6 @@
 import requests
 import random
 import string
-from pprint import pprint
 
 
 def create_random_person():
@@ -27,6 +26,4 @@ for _ in range(100):
     p = create_random_person()
     r = requests.post('http://127.0.0.1:8000/create', data=p)
 
-    # pprint(p)
     print(r.text)
-    # print(str(p['name']))

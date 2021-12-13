@@ -17,7 +17,7 @@ async def root():
 # Case 1: view all accounts
 @app.get("/accounts")
 async def accounts():
-    with engine.connect() as con:
+    with engine.begin() as con:
         accounts = con.execute(text("""
         select * from accounts"""))
     return {"message": list(accounts)}
@@ -26,7 +26,7 @@ async def accounts():
 # Case 2: view all transactions of a specific account
 @app.get("/account/{account_id}")
 async def txns_for_account(account_id):
-    with engine.connect() as con:
+    with engine.begin() as con:
         txns = con.execute(text("""
         select * from transactions
         where from_account = :acc_id
@@ -37,7 +37,7 @@ async def txns_for_account(account_id):
 # Case 3: view all transactions
 @app.get("/transactions")
 async def transactions():
-    with engine.connect() as con:
+    with engine.begin() as con:
         transactions = con.execute(text("""
         select * from transactions"""))
     return {"message": list(transactions)}
@@ -46,7 +46,7 @@ async def transactions():
 # Case 4: view all employees
 @app.get("/employees")
 async def employees():
-    with engine.connect() as con:
+    with engine.begin() as con:
         employees = con.execute(text("""
         select * from employees"""))
     return {"message": list(employees)}
@@ -55,7 +55,7 @@ async def employees():
 # Case 5: view all vendors
 @app.get("/vendors")
 async def vendors():
-    with engine.connect() as con:
+    with engine.begin() as con:
         vendors = con.execute(text("""
         select * from vendors"""))
     return {"message": list(vendors)}
@@ -64,7 +64,7 @@ async def vendors():
 # Case 5: view all customers
 @app.get("/customers")
 async def customers():
-    with engine.connect() as con:
+    with engine.begin() as con:
         customers = con.execute(text("""
         select * from customers"""))
     return {"message": list(customers)}
@@ -73,7 +73,7 @@ async def customers():
 # Case 7: view employee Attendance
 @app.get("/attendance")
 async def attendance():
-    with engine.connect() as con:
+    with engine.begin() as con:
         attendance = con.execute(text("""
         select * from attendance"""))
     return {"message": list(attendance)}
@@ -82,7 +82,7 @@ async def attendance():
 # Case 8: view employee salary
 @app.get("/salary/{employee_id}")
 async def salary(employee_id):
-    with engine.connect() as con:
+    with engine.begin() as con:
         salary = con.execute(text("""
         select hourly_wage from employee
         where employee_id = :emp_id
@@ -93,7 +93,7 @@ async def salary(employee_id):
 # Case 9: view employee advance
 @app.get("/advance/{employee_id}")
 async def advance(employee_id):
-    with engine.connect() as con:
+    with engine.begin() as con:
         advance = con.execute(text("""
         select amount from transaction, advance
         where advance.employee_id = :emp_id
@@ -104,7 +104,7 @@ async def advance(employee_id):
 # Case 10: insert employee attendance
 @app.post("/attendance")
 async def attendance(employee_id, date, time_in, time_out, leave, break_hours):
-    with engine.connect() as con:
+    with engine.begin() as con:
         attendance = con.execute(text("""
         INSERT INTO attendance VALUES
         (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
@@ -115,7 +115,7 @@ async def attendance(employee_id, date, time_in, time_out, leave, break_hours):
 # 11 View customer accounts easy, select * from accounts
 @app.get("/accounts")
 async def customer_accounts():
-    with engine.connect() as con:
+    with engine.begin() as con:
         accounts = con.execute(text("""
         select * from accounts
         where id in :customers
@@ -125,7 +125,7 @@ async def customer_accounts():
 
 @app.get("/customers")
 async def getcustomers():
-    with engine.connect() as con:
+    with engine.begin() as con:
         customersList = con.execute(text("""
         select id from customers
         """))
@@ -135,7 +135,7 @@ async def getcustomers():
 # 12 view stock easy, select * from stock
 @app.get("/stock")
 async def stock():
-    with engine.connect() as con:
+    with engine.begin() as con:
         stock = con.execute(text("""
         select * from stock """))
     return {"message": list(stock)}
@@ -146,7 +146,7 @@ async def stock():
 
 @app.get("/attendance")
 async def remainingLeaves(datefrom, dateto, employeeid, total):
-    with engine.connect() as con:
+    with engine.begin() as con:
         leaves = con.execute(text("""
         select count(transaction_id) from attendance
         where employee_id = :employeeid and date_today between :datefrom and :dateto
@@ -157,7 +157,7 @@ async def remainingLeaves(datefrom, dateto, employeeid, total):
 # 15 add new item in inventory update stock
 @app.post("/add stock")
 async def update_stock(quentity, location, total_weight, rec_date, use_date, typ):
-    with engine.connect() as con:
+    with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO stock VALUES
         (:quentity, :location, :total_weight, :rec_date, :use_date, :typ)
@@ -168,7 +168,7 @@ async def update_stock(quentity, location, total_weight, rec_date, use_date, typ
 # 16 remove item from stock
 @app.post("/delete stock/{stock_ID}")
 async def remove_stock(stock_ID):
-    with engine.connect() as con:
+    with engine.begin() as con:
         delete_stock = con.execute(text("""
         	DELETE FROM stock
        		where stock.stock_ID = :stk_id
@@ -179,7 +179,7 @@ async def remove_stock(stock_ID):
 # 17 calculate employee wage income +/- overtime/undertime
 @app.get("/wage/{employee_id}")
 async def wage(employee_id):
-    with engine.connect() as con:
+    with engine.begin() as con:
         wage = con.execute(text("""
         select hourly_wage from employee
         where employee_id = :emp_id
@@ -196,7 +196,7 @@ async def wage(employee_id):
 # 18 view orders select * from orders where status <> completed
 @app.get("/orders")
 async def orders():
-    with engine.connect() as con:
+    with engine.begin() as con:
         orders = con.execute(text("""
         select * from orders """))
     return {"message": list(orders)}
@@ -205,7 +205,7 @@ async def orders():
 # 19 input transaction insert a transaction
 @app.post("/transactions")
 async def transaction(amount, date, from_account, to_account,):
-    with engine.connect() as con:
+    with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO transactions VALUES
         (:amount, :date, :from_account, :to_account)
@@ -216,7 +216,7 @@ async def transaction(amount, date, from_account, to_account,):
 # 20 view one customers account select * from account where id is
 @app.get("/accounts/{account_id}")
 async def customer_account(account_id):
-    with engine.connect() as con:
+    with engine.begin() as con:
         accounts = con.execute(text("""
         select * from accounts
         where id =:acc_id  """), acc_id=account_id)
@@ -235,7 +235,8 @@ async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(.
                     returning account_id
                 )
                 insert into {role} (name, address, phone_number, account_id)
-                values (:name, :address, :phone, (select * from new_id)) returning account_id;
+                values (:name, :address, :phone, (select * from new_id))
+                returning account_id;
                 '''), name=name, address=address, phone=phone, ob=opening_balance)
 
             id = id.first()[0]
