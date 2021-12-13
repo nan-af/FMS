@@ -20,7 +20,7 @@ async def accounts():
     with engine.begin() as con:
         accounts = con.execute(text("""
         select * from accounts"""))
-    return {"message": list(accounts)}
+    return list(accounts)
 
 
 # Case 2: view all transactions of a specific account
@@ -208,8 +208,8 @@ async def orders():
 async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
-        INSERT INTO transactions VALUES
-        (:amount, :date, :from_account, :to_account)
+        INSERT INTO transactions (amount, tr_date, from_account, to_account)
+        VALUES (:amount, :date, :from_account, :to_account)
         """), amount=amount, date=date, from_account=from_account, to_account=to_account)
     return {"message": "Transactions record updated"}
 
