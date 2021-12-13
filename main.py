@@ -24,14 +24,14 @@ async def accounts():
 
 
 # Case 2: view all transactions of a specific account
-@app.get("/account/{account_id}")
+@app.get("/account")
 async def txns_for_account(account_id):
     with engine.begin() as con:
         txns = con.execute(text("""
         select * from transactions
         where from_account = :acc_id
         or to_account = :acc_id"""), acc_id=account_id)
-    return {"message": list(txns)}
+    return list(txns)
 
 
 # Case 3: view all transactions
@@ -40,7 +40,7 @@ async def transactions():
     with engine.begin() as con:
         transactions = con.execute(text("""
         select * from transactions"""))
-    return {"message": list(transactions)}
+    return list(transactions)
 
 
 # Case 4: view all employees
@@ -49,7 +49,7 @@ async def employees():
     with engine.begin() as con:
         employees = con.execute(text("""
         select * from employees"""))
-    return {"message": list(employees)}
+    return list(employees)
 
 
 # Case 5: view all vendors
@@ -58,7 +58,7 @@ async def vendors():
     with engine.begin() as con:
         vendors = con.execute(text("""
         select * from vendors"""))
-    return {"message": list(vendors)}
+    return list(vendors)
 
 
 # Case 5: view all customers
@@ -67,7 +67,7 @@ async def customers():
     with engine.begin() as con:
         customers = con.execute(text("""
         select * from customers"""))
-    return {"message": list(customers)}
+    return list(customers)
 
 
 # Case 7: view employee Attendance
@@ -76,29 +76,29 @@ async def attendance():
     with engine.begin() as con:
         attendance = con.execute(text("""
         select * from attendance"""))
-    return {"message": list(attendance)}
+    return list(attendance)
 
 
 # Case 8: view employee salary
-@app.get("/salary/{employee_id}")
+@app.get("/salary")
 async def salary(employee_id):
     with engine.begin() as con:
         salary = con.execute(text("""
         select hourly_wage from employee
         where employee_id = :emp_id
         """), emp_id=employee_id)
-    return {"message": list(salary)}
+    return list(salary)
 
 
 # Case 9: view employee advance
-@app.get("/advance/{employee_id}")
+@app.get("/advance")
 async def advance(employee_id):
     with engine.begin() as con:
         advance = con.execute(text("""
         select amount from transaction, advance
         where advance.employee_id = :emp_id
         """), emp_id=employee_id)
-    return {"message": list(advance)}
+    return list(advance)
 
 
 # Case 10: insert employee attendance
@@ -121,7 +121,7 @@ async def customer_accounts():
         where account_id in (select account_id
                              from customer)
         """))  # , customers=getcustomers())
-    return {"message": list(accounts)}
+    return list(accounts)
 
 
 # # @app.get("/customers")
@@ -139,7 +139,7 @@ async def stock():
     with engine.begin() as con:
         stock = con.execute(text("""
         select * from stock """))
-    return {"message": list(stock)}
+    return list(stock)
 
 # 13 view income DONE AS CASE 8
 # 14 view leaves total - all taken leaves of an employee
@@ -167,7 +167,7 @@ async def update_stock(quantity=Form(...), location=Form(...), total_weight=Form
 
 
 # 16 remove item from stock
-@app.post("/delete_stock/{stock_ID}")
+@app.post("/delete_stock")
 async def remove_stock(stock_ID):
     with engine.begin() as con:
         delete_stock = con.execute(text("""
@@ -178,7 +178,7 @@ async def remove_stock(stock_ID):
 
 
 # 17 calculate employee wage income +/- overtime/undertime
-@app.get("/wage/{employee_id}")
+@app.get("/wage")
 async def wage(employee_id):
     with engine.begin() as con:
         wage = con.execute(text("""
@@ -191,7 +191,7 @@ async def wage(employee_id):
         where employee_id = :emp_id
         """), emp_id=employee_id)
         calculated_wage = wage * time_put
-    return {"message": calculated_wage}
+    return calculated_wage
 
 
 # 18 view orders select * from orders where status <> completed
@@ -200,7 +200,7 @@ async def orders():
     with engine.begin() as con:
         orders = con.execute(text("""
         select * from orders """))
-    return {"message": list(orders)}
+    return list(orders)
 
 
 # 19 input transaction insert a transaction
@@ -215,13 +215,13 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
 
 
 # 20 view one customers account select * from account where id is
-@app.get("/accounts/{account_id}")
-async def customer_account(account_id):
-    with engine.begin() as con:
-        accounts = con.execute(text("""
-        select * from accounts
-        where id =:acc_id  """), acc_id=account_id)
-    return {"message": list(accounts)}
+# @app.get("/accounts/{account_id}")
+# async def customer_account(account_id):
+#     with engine.begin() as con:
+#         accounts = con.execute(text("""
+#         select * from accounts
+#         where id =:acc_id  """), acc_id=account_id)
+#     return {"message": list(accounts)}
 
 
 # 21 create new customer/vendor/employee
