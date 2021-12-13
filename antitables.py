@@ -30,4 +30,6 @@ with engine.connect() as con:
     DROP TABLE IF EXISTS public.transactions CASCADE;
 
     DROP TABLE IF EXISTS public.vendor CASCADE;
+
+    DROP TABLE IF EXISTS public.will_use CASCADE;
     """))
