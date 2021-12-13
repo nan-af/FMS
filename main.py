@@ -103,7 +103,7 @@ async def advance(employee_id):
 
 # Case 10: insert employee attendance
 @app.post("/attendance")
-async def attendance(employee_id, date, time_in, time_out, leave, break_hours):
+async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
     with engine.begin() as con:
         attendance = con.execute(text("""
         INSERT INTO attendance VALUES
@@ -113,23 +113,24 @@ async def attendance(employee_id, date, time_in, time_out, leave, break_hours):
 
 
 # 11 View customer accounts easy, select * from accounts
-@app.get("/accounts")
+@app.get("/customer_accounts")
 async def customer_accounts():
     with engine.begin() as con:
         accounts = con.execute(text("""
         select * from accounts
-        where id in :customers
-        """), customers=getcustomers())
+        where account_id in (select account_id
+                             from customer)
+        """))  # , customers=getcustomers())
     return {"message": list(accounts)}
 
 
-@app.get("/customers")
-async def getcustomers():
-    with engine.begin() as con:
-        customersList = con.execute(text("""
-        select id from customers
-        """))
-    return customersList
+# # @app.get("/customers")
+# async def getcustomers():
+#     with engine.begin() as con:
+#         customersList = con.execute(text("""
+#         select id from customers
+#         """))
+#     return customersList
 
 
 # 12 view stock easy, select * from stock
@@ -145,7 +146,7 @@ async def stock():
 
 
 @app.get("/attendance")
-async def remainingLeaves(datefrom, dateto, employeeid, total):
+async def remainingLeaves(datefrom=Form(...), dateto=Form(...), employeeid=Form(...), total=Form(...)):
     with engine.begin() as con:
         leaves = con.execute(text("""
         select count(transaction_id) from attendance
@@ -155,18 +156,18 @@ async def remainingLeaves(datefrom, dateto, employeeid, total):
 
 
 # 15 add new item in inventory update stock
-@app.post("/add stock")
-async def update_stock(quentity, location, total_weight, rec_date, use_date, typ):
+@app.post("/add_stock")
+async def update_stock(quantity=Form(...), location=Form(...), total_weight=Form(...), rec_date=Form(...), use_date=Form(...), typ=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO stock VALUES
-        (:quentity, :location, :total_weight, :rec_date, :use_date, :typ)
-        """), quentity=quentity, location=location, total_weight=total_weight, rec_date=rec_date, use_date=use_date, typ=typ)
+        (:quantity, :location, :total_weight, :rec_date, :use_date, :typ)
+        """), quantity=quantity, location=location, total_weight=total_weight, rec_date=rec_date, use_date=use_date, typ=typ)
     return {"message": "Stock record updated"}
 
 
 # 16 remove item from stock
-@app.post("/delete stock/{stock_ID}")
+@app.post("/delete_stock/{stock_ID}")
 async def remove_stock(stock_ID):
     with engine.begin() as con:
         delete_stock = con.execute(text("""
@@ -204,7 +205,7 @@ async def orders():
 
 # 19 input transaction insert a transaction
 @app.post("/transactions")
-async def transaction(amount, date, from_account, to_account,):
+async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO transactions VALUES
