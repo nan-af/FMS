@@ -12,7 +12,7 @@ def create_random_person():
     a = random.choices(string.ascii_letters, k=15)
     p = random.choices(string.digits, k=12)
     o = random.randint(-100000, 100000)
-    h = random.randint(50, 200) if r == 'employee' else None
+    h = random.randint(50, 200) if r == 'employee' else 0
 
     return {'role': r, 'name': ''.join(n), 'address': ''.join(a), 'phone': ''.join(p), 'opening_balance': o, 'hourly_wage': h}
 

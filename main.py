@@ -226,7 +226,8 @@ async def customer_account(account_id):
 
 # 21 create new customer/vendor/employee
 @app.post("/create")
-async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=None):
+async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=Form(...)):
+    print(hourly_wage)
     if role in {'customer', 'vendor', 'employee'}:
         with engine.begin() as con:
             id = con.execute(text(f'''
@@ -242,12 +243,12 @@ async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(.
 
             id = id.first()[0]
 
-            if hourly_wage is not None:
+            if role == 'employee':
                 con.execute(text('''
                     update employee
                     set hourly_wage = :hw
                     where account_id = :id
-                    ))'''), hw=hourly_wage, id=id)
+                    '''), hw=hourly_wage, id=id)
 
         return {'message': f'Successfully created {role} {name} with account number {id}.'}
 
