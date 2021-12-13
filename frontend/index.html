@@ -7,16 +7,16 @@
 		function get_accounts() {
 			axios.get('/accounts')
 				.then(res => {
-					console.log(res.data.message)
-					document.getElementById('output').innerHTML = res.data.message
+					console.log(res.data)
+					document.getElementById('output').innerHTML = JSON.stringify(res.data)
 				})
 				.catch(err => console.log(err))
 		}
 		function get_transactions() {
 			axios.get('/transactions')
 				.then(res => {
-					console.log(res.data.message)
-					document.getElementById('output').innerHTML = res.data.message
+					console.log(res.data)
+					document.getElementById('output').innerHTML = JSON.stringify(res.data)
 				})
 				.catch(err => console.log(err))
 		}
@@ -52,6 +52,12 @@
 				})
 				.catch(err => console.log(err))
 		}
+		function set_visibility(id) {
+			// for all elements in getelementbyid(form)
+			// 		set style.display = 'none'
+
+			document.getElementById(id).style.display = 'initial'
+		}
 	</script>
 </head>
 
@@ -62,7 +68,22 @@
 	<button onclick="get_vendors()">Get vendors</button>
 	<button onclick="get_customers()">Get customers</button>
 	<button onclick="get_attendance()">Get attendance</button>
-	<div id="form"></div>
+	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
+	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
+	<div id="form">
+		<form action="/account" method="get" id="get_transactions_for_account" style="display: none;">
+			<label for="a_id">Account ID</label>
+			<input type="text" id="a_id" name="account_id">
+
+			<input type="submit" value="Get account">
+		</form>
+		<form action="/salary" method="get" id="get_salary_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+
+			<input type="submit" value="Get salary">
+		</form>
+	</div>
 	<div id="output"></div>
 </body>
 
