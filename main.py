@@ -57,7 +57,7 @@ async def employees():
 async def vendors():
     with engine.begin() as con:
         vendors = con.execute(text("""
-        select * from vendors"""))
+        select * from vendor"""))
     return list(vendors)
 
 
@@ -66,7 +66,7 @@ async def vendors():
 async def customers():
     with engine.begin() as con:
         customers = con.execute(text("""
-        select * from customers"""))
+        select * from customer"""))
     return list(customers)
 
 
@@ -79,7 +79,7 @@ async def attendance():
     return list(attendance)
 
 
-# Case 8: view employee salary 
+# Case 8: view employee salary
 @app.get("/salary")
 async def salary(employee_id):
     with engine.begin() as con:
