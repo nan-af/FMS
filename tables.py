@@ -96,7 +96,9 @@ with engine.connect() as con:
         transaction_id integer primary key,
         time_in time not null,
         time_out time not null,
-        leave boolean, 
+        leave boolean,
+
+        foreign key(employee_id)
         references employee(employee_id)
         on update cascade,
 
