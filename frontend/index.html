@@ -40,6 +40,8 @@
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
 	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
 	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
+	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
+	<button onclick="set_visibility('insert_attendence_for_employee')">Insert attendance</button>
 	<button onclick="set_visibility('new_member')">Make new Member</button>
 	<button onclick="set_visibility('insert_transaction')">Insert Transaction</button>
 
@@ -67,9 +69,51 @@
 		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-
 			<button type="button" onclick="form_get('/advance','get_advance_for_employee')">
 				Get Advance</button>
+		</form>
+
+		<!--apply for advance-->
+		<form id="insert_advance_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+
+			<label for="tr_amount">Amount</label>
+			<input type="text" id="tr_amount" name="amount">
+
+			<label for="tr_date">Date</label>
+			<input type="date" id="tr_date" name="date">
+
+			<button type="button" onclick="form_post('/advance','insert_advance_for_employee')">
+				Insert Advance</button>
+		</form>
+
+		<!--insert attendence-->
+		
+		<form id="insert_attendence_for_employee" style="display: none;">
+			
+			<br>
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id"><br><br>
+
+			<label for="at_date">Date</label>
+			<input type="date" id="at_date" name="date"><br><br>
+
+			<label for="at_time_in">Start Time</label>
+			<input type="time" id="at_time_in" name="time_in"><br><br>
+			
+			<label for="at_time_out">Leave Time</label>
+			<input type="time" id="at_time_out" name="time_out"><br><br>
+
+			<label for="at_leave">Leave</label>
+			<input type="checkbox" id="at_leave" name="leave", value="Yes"><br><br>
+			
+			<label for="at_hours">Break Hours</label>
+			<input type="text" id="at_hours" name="break_hours"><br><br>
+
+
+			<button type="button" onclick="form_post('/advance','insert_attendence_for_employee')">
+				Insert Attendance</button>
 		</form>
 
 		<!-- Case 21 -->
@@ -106,7 +150,7 @@
 			<input type="text" id="amount_id" name="amount"><br>
 
 			<label for="date_id">Enter Date: </label><br>
-			<input type="text" id="date_id" name="date"><br>
+			<input type="date" id="date_id" name="date"><br>
 
 			<label for="from_id">From Account: </label><br>
 			<input type="text" id="from_id" name="from_account"><br>
