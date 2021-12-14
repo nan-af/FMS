@@ -14,7 +14,7 @@ async def root():
     return HTMLResponse(Path("frontend/index.html").read_text())
 
 
-# Case 1: view all accounts
+# Case 1: view all accounts DONE
 @app.get("/accounts")
 async def accounts():
     with engine.begin() as con:
@@ -23,7 +23,7 @@ async def accounts():
     return list(accounts)
 
 
-# Case 2: view all transactions of a specific account
+# Case 2: view all transactions of a specific account DONE
 @app.get("/account")
 async def txns_for_account(account_id):
     with engine.begin() as con:
@@ -34,7 +34,7 @@ async def txns_for_account(account_id):
     return list(txns)
 
 
-# Case 3: view all transactions
+# Case 3: view all transactions DONE
 @app.get("/transactions")
 async def transactions():
     with engine.begin() as con:
@@ -43,16 +43,16 @@ async def transactions():
     return list(transactions)
 
 
-# Case 4: view all employees
+# Case 4: view all employees DONE
 @app.get("/employees")
 async def employees():
     with engine.begin() as con:
         employees = con.execute(text("""
-        select * from employees"""))
+        select * from employee"""))
     return list(employees)
 
 
-# Case 5: view all vendors
+# Case 5: view all vendors DONE
 @app.get("/vendors")
 async def vendors():
     with engine.begin() as con:
@@ -61,7 +61,7 @@ async def vendors():
     return list(vendors)
 
 
-# Case 5: view all customers
+# Case 5: view all customers DONE
 @app.get("/customers")
 async def customers():
     with engine.begin() as con:
@@ -70,7 +70,7 @@ async def customers():
     return list(customers)
 
 
-# Case 7: view employee Attendance
+# Case 7: view employee Attendance DONE
 @app.get("/attendance")
 async def attendance():
     with engine.begin() as con:
@@ -79,7 +79,7 @@ async def attendance():
     return list(attendance)
 
 
-# Case 8: view employee salary
+# Case 8: view employee salary 
 @app.get("/salary")
 async def salary(employee_id):
     with engine.begin() as con:
