@@ -90,7 +90,7 @@ async def salary(employee_id):
         select hourly_wage from employee
         where employee_id = :emp_id
         """), emp_id=employee_id)
-    return json2html.convert(list(salary))
+    return json2html.convert(json=list(salary))
 
 
 # Case 9: view employee advance
@@ -206,7 +206,7 @@ async def orders():
     return json2html.convert(list(orders))
 
 
-# 19 input transaction insert a transaction
+# 19 insert a transaction DONEE
 @app.post("/transactions")
 async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...)):
     with engine.begin() as con:
@@ -227,7 +227,7 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
 #     return {"message": list(accounts)}
 
 
-# 21 create new customer/vendor/employee
+# 21 create new customer/vendor/employee DONEE
 @app.post("/create")
 async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=Form(...)):
     print(hourly_wage)
