@@ -8,6 +8,7 @@ fastapi = {extras = ["all"], version = "*"}
 sqlalchemy = "*"
 fastapi-sqlalchemy = "*"
 psycopg2 = "*"
+json2html = "*"
 
 [dev-packages]
 autopep8 = "*"
