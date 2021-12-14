@@ -59,7 +59,22 @@
 			}					
 			document.getElementById(id).style.display = 'initial'
 		}
-		
+		function form_get(id, path) {
+			axios.get(path, { params: Object.fromEntries(new FormData(document.getElementById(id))) })
+				.then(res => {
+					console.log(res.data)
+					document.getElementById('output').innerHTML = JSON.stringify(res.data)
+				})
+				.catch(err => console.log(err))
+		}
+		function form_post(id, path) {
+			axios.post(path, new FormData(document.getElementById(id)))
+				.then(res => {
+					console.log(res.data)
+					document.getElementById('output').innerHTML = res.data
+				})
+				.catch(err => console.log(err))
+		}
 	</script>
 </head>
 
@@ -72,13 +87,15 @@
 	<button onclick="get_attendance()">Get attendance</button>
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
 	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
+	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
 	<div id="form">
 		<!-- Case 2  -->
 		<form action="/account" method="get" id="get_transactions_for_account" style="display: none;">
 			<label for="a_id">Account ID</label>
 			<input type="text" id="a_id" name="account_id">
 
-			<input type="submit" value="Get account">
+			<button type="button" onclick="form_get('get_transactions_for_account','/account')">Get
+				transactions</button>
 		</form>
 		<!-- Case 8 -->
 		<form action="/salary" method="get" id="get_salary_for_employee" style="display: none;">
@@ -87,6 +104,14 @@
 
 			<input type="submit" value="Get salary">
 		</form>
+		<!--advance for employee-->
+		<form action="/advance" method="get" id="get_advance_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+
+			<input type="submit" value="Get Advance">
+		</form>
+
 	</div>
 	<div id="output"></div>
 </body>
