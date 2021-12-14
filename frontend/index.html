@@ -15,7 +15,7 @@
 			axios.get(path, id ? { params: Object.fromEntries(new FormData(document.getElementById(id))) } : null)
 				.then(res => {
 					console.log(res.data)
-					document.getElementById('output').innerHTML = JSON.stringify(res.data)
+					document.getElementById('output').innerHTML = res.data
 				})
 				.catch(err => console.log(err))
 		}
@@ -40,6 +40,9 @@
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
 	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
 	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
+	<button onclick="set_visibility('new_member')">Make new Member</button>
+	<button onclick="set_visibility('insert_transaction')">Insert Transaction</button>
+
 	<div id="form">
 		<!-- Case 2  -->
 		<form id="get_transactions_for_account" style="display: none;">
@@ -54,14 +57,65 @@
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
-			<input type="submit" value="Get salary">
+			<button type="button" onclick="form_get('/salary','get_salary_for_employee')">
+				Get Salary</button>
+
+			
 		</form>
+
 		<!--advance for employee-->
 		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
-			<input type="submit" value="Get Advance">
+			<button type="button" onclick="form_get('/advance','get_advance_for_employee')">
+				Get Advance</button>
+		</form>
+
+		<!-- Case 21 -->
+		<form id="new_member" style="display: none;">
+			<label for="p_id">Choose Position</label><br>
+			<select name="role" id="new_member">
+				<option value="employee">Employee</option>
+				<option value="customer">Customer</option>
+				<option value="vendor">Vendor</option>
+			</select><br>
+
+			<label for="p_name">Enter Name:</label><br>
+			<input type="text" id="p_name" name="name"><br>
+
+			<label for="p_address">Enter Address:</label><br>
+			<input type="text" id="p_address" name="address"><br>
+
+			<label for="p_phone">Enter Phone Number:</label><br>
+			<input type="text" id="p_phone" name="phone"><br>
+
+			<label for="p_open_balance">Enter Opening Balance:</label><br>
+			<input type="text" id="p_open_balance" name="opening_balance"><br>
+
+			<label for="p_wage">Enter Hourly Wage:</label><br>
+			<input type="text" id="p_wage" name="hourly_wage">
+
+			<button type="button" onclick="form_post('/create','new_member')">
+				Add Person</button>		
+		</form>
+
+		<!--Case 19 -->
+		<form id="insert_transaction" style="display: none;">
+			<label for="amount_id">Enter Amount: </label><br>
+			<input type="text" id="amount_id" name="amount"><br>
+
+			<label for="date_id">Enter Date: </label><br>
+			<input type="text" id="date_id" name="date"><br>
+
+			<label for="from_id">From Account: </label><br>
+			<input type="text" id="from_id" name="from_account"><br>
+
+			<label for="to_id">To Account: </label><br>
+			<input type="text" id="to_id" name="to_account"><br>
+
+			<button type="button" onclick="form_post('/transactions','insert_transaction')">
+				Insert</button>
 		</form>
 
 	</div>
