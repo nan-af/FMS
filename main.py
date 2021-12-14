@@ -124,6 +124,21 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
     return "Advance updated"
 
 
+@app.get("/allowances")
+async def get_allowance_by_employee(employee_id):
+    pass
+
+
+@app.post('/allowances')
+async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), allowance_type=Form(...), date=Form(...)):
+    pass
+
+
+@app.get("/attendance")
+async def get_attendance_by_employee(employee_id):
+    pass
+
+
 # Case 10: insert employee attendance
 @app.post("/attendance")
 async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
@@ -168,14 +183,14 @@ async def stock():
 # 14 view leaves total - all taken leaves of an employee
 
 
-@app.get("/attendance")
-async def remainingLeaves(datefrom=Form(...), dateto=Form(...), employeeid=Form(...), total=Form(...)):
-    with engine.begin() as con:
-        leaves = con.execute(text("""
-        select count(transaction_id) from attendance
-        where employee_id = :employeeid and date_today between :datefrom and :dateto
-         """), employeeid=employeeid, datefrom=datefrom, dateto=dateto)
-    return str(total-leaves)+" remaining for employee with employee id {employeeid}."
+# @app.get("/attendance")
+# async def remainingLeaves(datefrom=Form(...), dateto=Form(...), employeeid=Form(...), total=Form(...)):
+#     with engine.begin() as con:
+#         leaves = con.execute(text("""
+#         select count(transaction_id) from attendance
+#         where employee_id = :employeeid and date_today between :datefrom and :dateto
+#          """), employeeid=employeeid, datefrom=datefrom, dateto=dateto)
+#     return str(total-leaves)+" remaining for employee with employee id {employeeid}."
 
 
 # 15 add new item in inventory update stock
