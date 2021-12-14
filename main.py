@@ -104,6 +104,26 @@ async def advance(employee_id):
     return json2html.convert(list(advance))
 
 
+@app.post("/advance")
+async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
+    with engine.begin() as con:
+        con.execute(text('''
+        with tr_id as (
+            insert into transactions (amount, tr_date, from_account, to_account)
+            values (:amt,
+                    :date,
+                    (select account_id from employee
+                     where employee_id = :e_id),
+                    1)
+            returning tr_id
+        )
+        insert into advance (transaction_id, employee_id)
+        values ((select * from tr_id), :e_id)
+        '''), e_id=employee_id, amt=amount, date=date)
+
+    return "Advance updated"
+
+
 # Case 10: insert employee attendance
 @app.post("/attendance")
 async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
