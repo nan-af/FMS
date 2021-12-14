@@ -1,9 +1,11 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.param_functions import Form
 from fastapi.responses import HTMLResponse
+from json2html import *
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-from pathlib import Path
 
 app = FastAPI()
 engine = create_engine(Path("db_connection").read_text(), echo=True)
@@ -14,69 +16,70 @@ async def root():
     return HTMLResponse(Path("frontend/index.html").read_text())
 
 
-# Case 1: view all accounts
+# Case 1: view all accounts DONE
 @app.get("/accounts")
 async def accounts():
     with engine.begin() as con:
         accounts = con.execute(text("""
         select * from accounts"""))
-    return list(accounts)
+    return json2html.convert(json=list(accounts))
 
 
-# Case 2: view all transactions of a specific account
+# Case 2: view all transactions of a specific account DONE
 @app.get("/account")
 async def txns_for_account(account_id):
+    print(account_id)
     with engine.begin() as con:
         txns = con.execute(text("""
         select * from transactions
         where from_account = :acc_id
         or to_account = :acc_id"""), acc_id=account_id)
-    return list(txns)
+    return json2html.convert(json=list(txns))
 
 
-# Case 3: view all transactions
+# Case 3: view all transactions DONE
 @app.get("/transactions")
 async def transactions():
     with engine.begin() as con:
         transactions = con.execute(text("""
         select * from transactions"""))
-    return list(transactions)
+    return json2html.convert(json=list(transactions))
 
 
-# Case 4: view all employees
+# Case 4: view all employees DONE
 @app.get("/employees")
 async def employees():
     with engine.begin() as con:
         employees = con.execute(text("""
-        select * from employees"""))
-    return list(employees)
+        select * from employee"""))
+    return json2html.convert(list(employees))
 
 
-# Case 5: view all vendors
+# Case 5: view all vendors DONE
 @app.get("/vendors")
 async def vendors():
     with engine.begin() as con:
         vendors = con.execute(text("""
-        select * from vendors"""))
-    return list(vendors)
+        select * from vendor"""))
+    return json2html.convert(list(vendors))
 
 
-# Case 5: view all customers
+# Case 5: view all customers DONE
 @app.get("/customers")
 async def customers():
     with engine.begin() as con:
         customers = con.execute(text("""
-        select * from customers"""))
-    return list(customers)
+        select * from customer"""))
+    return json2html.convert(list(customers))
 
 
-# Case 7: view employee Attendance
+# Case 7: view employee Attendance DONE
 @app.get("/attendance")
 async def attendance():
     with engine.begin() as con:
         attendance = con.execute(text("""
         select * from attendance"""))
-    return list(attendance)
+    return json2html.convert(list(attendance))
 
 
 # Case 8: view employee salary
@@ -87,7 +90,7 @@ async def salary(employee_id):
         select hourly_wage from employee
         where employee_id = :emp_id
         """), emp_id=employee_id)
-    return list(salary)
+    return json2html.convert(list(salary))
 
 
 # Case 9: view employee advance
@@ -98,7 +101,7 @@ async def advance(employee_id):
         select amount from transaction, advance
         where advance.employee_id = :emp_id
         """), emp_id=employee_id)
-    return list(advance)
+    return json2html.convert(list(advance))
 
 
 # Case 10: insert employee attendance
@@ -109,7 +112,7 @@ async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), t
         INSERT INTO attendance VALUES
         (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
         """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return {"message": "Employee attendance updated"}
+    return "Employee attendance updated"
 
 
 # 11 View customer accounts easy, select * from accounts
@@ -121,7 +124,7 @@ async def customer_accounts():
         where account_id in (select account_id
                              from customer)
         """))  # , customers=getcustomers())
-    return list(accounts)
+    return json2html.convert(list(accounts))
 
 
 # # @app.get("/customers")
@@ -139,7 +142,7 @@ async def stock():
     with engine.begin() as con:
         stock = con.execute(text("""
         select * from stock """))
-    return list(stock)
+    return json2html.convert(list(stock))
 
 # 13 view income DONE AS CASE 8
 # 14 view leaves total - all taken leaves of an employee
@@ -152,7 +155,7 @@ async def remainingLeaves(datefrom=Form(...), dateto=Form(...), employeeid=Form(
         select count(transaction_id) from attendance
         where employee_id = :employeeid and date_today between :datefrom and :dateto
          """), employeeid=employeeid, datefrom=datefrom, dateto=dateto)
-    return {"message": str(total-leaves)+" remaining for employee with employee id {employeeid}."}
+    return str(total-leaves)+" remaining for employee with employee id {employeeid}."
 
 
 # 15 add new item in inventory update stock
@@ -163,7 +166,7 @@ async def update_stock(quantity=Form(...), location=Form(...), total_weight=Form
         INSERT INTO stock VALUES
         (:quantity, :location, :total_weight, :rec_date, :use_date, :typ)
         """), quantity=quantity, location=location, total_weight=total_weight, rec_date=rec_date, use_date=use_date, typ=typ)
-    return {"message": "Stock record updated"}
+    return "Stock record updated"
 
 
 # 16 remove item from stock
@@ -174,7 +177,7 @@ async def remove_stock(stock_ID):
         	DELETE FROM stock
        		where stock.stock_ID = :stk_id
         """), stk_id=stock_ID)
-    return {"message": "Stock deleted"}
+    return "Stock deleted"
 
 
 # 17 calculate employee wage income +/- overtime/undertime
@@ -200,7 +203,7 @@ async def orders():
     with engine.begin() as con:
         orders = con.execute(text("""
         select * from orders """))
-    return list(orders)
+    return json2html.convert(list(orders))
 
 
 # 19 input transaction insert a transaction
@@ -211,7 +214,7 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
         INSERT INTO transactions (amount, tr_date, from_account, to_account)
         VALUES (:amount, :date, :from_account, :to_account)
         """), amount=amount, date=date, from_account=from_account, to_account=to_account)
-    return {"message": "Transactions record updated"}
+    return "Transactions record updated"
 
 
 # 20 view one customers account select * from account where id is
@@ -250,7 +253,7 @@ async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(.
                     where account_id = :id
                     '''), hw=hourly_wage, id=id)
 
-        return {'message': f'Successfully created {role} {name} with account number {id}.'}
+        return f'Successfully created {role} {name} with account number {id}.'
 
     else:
         return {'error': 'Invalid type of person.'}

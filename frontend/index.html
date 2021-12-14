@@ -4,94 +4,66 @@
 	<title>FMS</title>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script>
-		function get_accounts() {
-			axios.get('/accounts')
-				.then(res => {
-					console.log(res.data)
-					document.getElementById('output').innerHTML = JSON.stringify(res.data)
-				})
-				.catch(err => console.log(err))
-		}
-		function get_transactions() {
-			axios.get('/transactions')
-				.then(res => {
-					console.log(res.data)
-					document.getElementById('output').innerHTML = JSON.stringify(res.data)
-				})
-				.catch(err => console.log(err))
-		}
-		function get_employees() {
-			axios.get('/employees')
-				.then(res => {
-					console.log(res.data.message)
-					document.getElementById('output').innerHTML = res.data.message
-				})
-				.catch(err => console.log(err))
-		}
-		function get_vendors() {
-			axios.get('/vendors')
-				.then(res => {
-					console.log(res.data.message)
-					document.getElementById('output').innerHTML = res.data.message
-				})
-				.catch(err => console.log(err))
-		}
-		function get_customers() {
-			axios.get('/customers')
-				.then(res => {
-					console.log(res.data.message)
-					document.getElementById('output').innerHTML = res.data.message
-				})
-				.catch(err => console.log(err))
-		}
-		function get_attendance() {
-			axios.get('/attendance')
-				.then(res => {
-					console.log(res.data.message)
-					document.getElementById('output').innerHTML = res.data.message
-				})
-				.catch(err => console.log(err))
-		}
 		function set_visibility(id) {
-			// for all elements in getelementbyid(form)
-			// 		set style.display = 'none'
-
+			for (element of document.getElementById("form").getElementsByTagName('form')) {
+				console.log(element)
+				element.style.display = 'none'
+			}
 			document.getElementById(id).style.display = 'initial'
+		}
+		function form_get(path, id) {
+			axios.get(path, id ? { params: Object.fromEntries(new FormData(document.getElementById(id))) } : null)
+				.then(res => {
+					console.log(res.data)
+					document.getElementById('output').innerHTML = JSON.stringify(res.data)
+				})
+				.catch(err => console.log(err))
+		}
+		function form_post(path, id) {
+			axios.post(path, new FormData(document.getElementById(id)))
+				.then(res => {
+					console.log(res.data)
+					document.getElementById('output').innerHTML = res.data
+				})
+				.catch(err => console.log(err))
 		}
 	</script>
 </head>
 
 <body>
-	<button onclick="get_accounts()">Get accounts</button>
-	<button onclick="get_transactions()">Get transactions</button>
-	<button onclick="get_employees()">Get employees</button>
-	<button onclick="get_vendors()">Get vendors</button>
-	<button onclick="get_customers()">Get customers</button>
-	<button onclick="get_attendance()">Get attendance</button>
+	<button onclick="form_get('/accounts')">Get accounts</button>
+	<button onclick="form_get('/transactions')">Get transactions</button>
+	<button onclick="form_get('/employees')">Get employees</button>
+	<button onclick="form_get('/vendors')">Get vendors</button>
+	<button onclick="form_get('/customers')">Get customers</button>
+	<button onclick="form_get('/attendance')">Get attendance</button>
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
 	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
 	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
 	<div id="form">
-		<form action="/account" method="get" id="get_transactions_for_account" style="display: none;">
+		<!-- Case 2  -->
+		<form id="get_transactions_for_account" style="display: none;">
 			<label for="a_id">Account ID</label>
 			<input type="text" id="a_id" name="account_id">
 
-			<input type="submit" value="Get account">
+			<button type="button" onclick="form_get('/account','get_transactions_for_account')">
+				Get transactions</button>
 		</form>
-		<form action="/salary" method="get" id="get_salary_for_employee" style="display: none;">
+		<!-- Case 8 -->
+		<form id="get_salary_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
 			<input type="submit" value="Get salary">
 		</form>
-		<!--advance for employee--> 
-		<form action="/advance" method="get" id="get_advance_for_employee" style="display: none;">
+		<!--advance for employee-->
+		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
 			<input type="submit" value="Get Advance">
 		</form>
-		
+
 	</div>
 	<div id="output"></div>
 </body>
