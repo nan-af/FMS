@@ -1,6 +1,7 @@
 import requests
 import random
 import string
+import html_to_json
 
 
 baseURL = 'http://127.0.0.1:8000'
@@ -19,7 +20,7 @@ def create_random_person():
 
 def create_random_transaction():
     r = requests.get(f'{baseURL}/accounts')
-    ids = [a['account_id'] for a in r.json()]
+    ids = [a['account_id'] for a in html_to_json.convert_tables(r.text)[0]]
 
     fa = random.choice(ids)
     while ((ta := random.choice(ids)) == fa):
