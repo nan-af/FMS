@@ -21,7 +21,8 @@ async def root():
 async def accounts():
     with engine.begin() as con:
         accounts = con.execute(text("""
-        select * from accounts"""))
+        select * from accounts
+        order by account_id"""))
     return json2html.convert(json=list(accounts))
 
 
@@ -90,7 +91,7 @@ async def salary(employee_id):
         select hourly_wage from employee
         where employee_id = :emp_id
         """), emp_id=employee_id)
-    return json2html.convert(list(salary))
+    return json2html.convert(json=list(salary))
 
 
 # Case 9: view employee advance
@@ -98,10 +99,62 @@ async def salary(employee_id):
 async def advance(employee_id):
     with engine.begin() as con:
         advance = con.execute(text("""
-        select amount from transaction, advance
+        select amount from transactions, advance
         where advance.employee_id = :emp_id
         """), emp_id=employee_id)
     return json2html.convert(list(advance))
+
+
+@app.post("/advance")
+async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
+    with engine.begin() as con:
+        con.execute(text('''
+        with acc_id as (
+            select account_id from employee
+            where employee_id = :e_id
+        )
+        
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amt
+        WHERE account_id = (select * from acc_id);
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amt
+        WHERE account_id = 1;
+
+        with tr_id as (
+            with acc_id as (
+                select account_id from employee
+                where employee_id = :e_id
+            )
+
+            insert into transactions (amount, tr_date, from_account, to_account)
+            values (:amt,
+                    :date,
+                    (select * from acc_id),
+                    1)
+            returning tr_id
+        )
+        insert into advance (transaction_id, employee_id)
+        values ((select * from tr_id), :e_id)
+        '''), e_id=employee_id, amt=amount, date=date)
+
+    return "Advance updated"
+
+
+@app.get("/allowances")
+async def get_allowance_by_employee(employee_id):
+    pass
+
+
+@app.post('/allowances')
+async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), allowance_type=Form(...), date=Form(...)):
+    pass
+
+
+@app.get("/attendance")
+async def get_attendance_by_employee(employee_id):
+    pass
 
 
 # Case 10: insert employee attendance
@@ -148,14 +201,14 @@ async def stock():
 # 14 view leaves total - all taken leaves of an employee
 
 
-@app.get("/attendance")
-async def remainingLeaves(datefrom=Form(...), dateto=Form(...), employeeid=Form(...), total=Form(...)):
-    with engine.begin() as con:
-        leaves = con.execute(text("""
-        select count(transaction_id) from attendance
-        where employee_id = :employeeid and date_today between :datefrom and :dateto
-         """), employeeid=employeeid, datefrom=datefrom, dateto=dateto)
-    return str(total-leaves)+" remaining for employee with employee id {employeeid}."
+# @app.get("/attendance")
+# async def remainingLeaves(datefrom=Form(...), dateto=Form(...), employeeid=Form(...), total=Form(...)):
+#     with engine.begin() as con:
+#         leaves = con.execute(text("""
+#         select count(transaction_id) from attendance
+#         where employee_id = :employeeid and date_today between :datefrom and :dateto
+#          """), employeeid=employeeid, datefrom=datefrom, dateto=dateto)
+#     return str(total-leaves)+" remaining for employee with employee id {employeeid}."
 
 
 # 15 add new item in inventory update stock
@@ -206,13 +259,21 @@ async def orders():
     return json2html.convert(list(orders))
 
 
-# 19 input transaction insert a transaction
+# 19 insert a transaction DONEE
 @app.post("/transactions")
 async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO transactions (amount, tr_date, from_account, to_account)
-        VALUES (:amount, :date, :from_account, :to_account)
+        VALUES (:amount, :date, :from_account, :to_account);
+
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amount
+        WHERE account_id = :from_account;
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amount
+        WHERE account_id = :to_account;
         """), amount=amount, date=date, from_account=from_account, to_account=to_account)
     return "Transactions record updated"
 
@@ -227,7 +288,7 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
 #     return {"message": list(accounts)}
 
 
-# 21 create new customer/vendor/employee
+# 21 create new customer/vendor/employee DONEE
 @app.post("/create")
 async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=Form(...)):
     print(hourly_wage)
