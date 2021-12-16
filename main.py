@@ -21,7 +21,8 @@ async def root():
 async def accounts():
     with engine.begin() as con:
         accounts = con.execute(text("""
-        select * from accounts"""))
+        select * from accounts
+        order by account_id"""))
     return json2html.convert(json=list(accounts))
 
 
@@ -108,12 +109,29 @@ async def advance(employee_id):
 async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
     with engine.begin() as con:
         con.execute(text('''
+        with acc_id as (
+            select account_id from employee
+            where employee_id = :e_id
+        )
+        
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amt
+        WHERE account_id = (select * from acc_id);
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amt
+        WHERE account_id = 1;
+
         with tr_id as (
+            with acc_id as (
+                select account_id from employee
+                where employee_id = :e_id
+            )
+
             insert into transactions (amount, tr_date, from_account, to_account)
             values (:amt,
                     :date,
-                    (select account_id from employee
-                     where employee_id = :e_id),
+                    (select * from acc_id),
                     1)
             returning tr_id
         )
@@ -247,7 +265,15 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
     with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO transactions (amount, tr_date, from_account, to_account)
-        VALUES (:amount, :date, :from_account, :to_account)
+        VALUES (:amount, :date, :from_account, :to_account);
+
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amount
+        WHERE account_id = :from_account;
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amount
+        WHERE account_id = :to_account;
         """), amount=amount, date=date, from_account=from_account, to_account=to_account)
     return "Transactions record updated"
 
