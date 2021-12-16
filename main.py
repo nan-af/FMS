@@ -98,7 +98,7 @@ async def salary(employee_id):
 async def advance(employee_id):
     with engine.begin() as con:
         advance = con.execute(text("""
-        select amount from transaction, advance
+        select amount from transactions, advance
         where advance.employee_id = :emp_id
         """), emp_id=employee_id)
     return json2html.convert(list(advance))
