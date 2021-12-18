@@ -10,6 +10,7 @@ fastapi-sqlalchemy = "*"
 psycopg2 = "*"
 json2html = "*"
 html-to-json = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 autopep8 = "*"

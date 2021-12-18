@@ -97,7 +97,8 @@ with engine.connect() as con:
         time_in time not null,
         time_out time not null,
         leave boolean,
-
+        break_hours integer not null,
+        
         foreign key(employee_id)
         references employee(employee_id)
         on update cascade,
