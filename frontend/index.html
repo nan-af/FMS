@@ -59,6 +59,7 @@
 	<button onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
 	<button onclick="set_visibility('insert_stock')">Insert Stock</button>
 	<button onclick="set_visibility('del_stock')">Delete Stock Item</button>
+	<button onclick="set_visibility('add_orders')">Place Order</button>
 
 	<div id="form">
 		<!-- Case 2  -->
@@ -299,6 +300,31 @@
 			<button type="button" onclick="form_post('/delete_stock','del_stock')">
 				Delete Stock</button>
 		</form>
+        
+		<!-- Place order-->
+		<form id="add_orders" style="display: none;">
+            <label for="from_id">From Account: </label><br>
+            <input type="text" id="from_id" name="from_account"><br>
+
+            <label for="to_id">To Account: </label><br>
+            <input type="text" id="to_id" name="to_account"><br>
+
+            <label for="amount_id">Enter Amount: </label><br>
+            <input type="text" id="amount_id" name="amount"><br>
+
+            <label for="quantity">Enter Quantity: </label><br>
+            <input type="text" id="qty" name="quantity"><br>
+
+            <label for="item_name">Item Name: </label><br>
+            <input type="text" id="item_name" name="item_name"><br>
+
+            <label for="date_id">Enter Date: </label><br>
+            <input type="date" id="date_id" name="date"><br>
+
+            <button type="button" onclick="form_post('/orders','add_orders')">
+                Insert Order</button>
+        </form>
+
 	</div>
 	<div id="output"></div>
 </body>
