@@ -197,14 +197,23 @@ async def get_attendance_by_employee(employee_id):
 
 
 # Case 10: insert employee attendance
-@app.post("/attendance")
+@app.post("/insert_attendance")
 async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
     with engine.begin() as con:
-        attendance = con.execute(text("""
-        INSERT INTO attendance
-        VALUES (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
+        at = con.execute(text("""
+        INSERT INTO attendance (employee_id, at_date, time_in, time_out, leave, break_hours)
+        VALUES (:employee_id, :date, :time_in, :time_out, :leave, :break_hours);
         """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return "Employee attendance updated"
+    return "Attendance record updated"
+
+# @app.post("/insert_attendance")
+# async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
+#     with engine.begin() as con:
+#         attendance = con.execute(text("""
+#         INSERT INTO attendance (employee_id, current_date, time_in, time_out, leave, break_hours)
+#         VALUES (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
+#         """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+#     return "Employee attendance updated"
 
 
 # 11 View customer accounts easy, select * from accounts
