@@ -31,23 +31,27 @@
 </head>
 
 <body>
-	<button onclick="form_get('/accounts')">Get accounts</button>
-	<button onclick="form_get('/transactions')">Get transactions</button>
-	<button onclick="form_get('/employees')">Get employees</button>
-	<button onclick="form_get('/vendors')">Get vendors</button>
-	<button onclick="form_get('/customers')">Get customers</button>
-	<button onclick="form_get('/attendance')">Get attendance</button>
+	<h1> Get Overall Data </h1>
+	<button onclick="form_get('/accounts')">Get All Accounts</button>
+	<button onclick="form_get('/transactions')">Get All Transactions</button>
+	<button onclick="form_get('/employees')">Get All Employees</button>
+	<button onclick="form_get('/vendors')">Get All Vendors</button>
+	<button onclick="form_get('/customers')">Get All Customers</button>
+	<button onclick="form_get('/attendance')">Get Total Attendance</button>
+	
+	<h1> Get Specific Data </h1>
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
 	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
 	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
-	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
-	<button onclick="set_visibility('insert_attendence_for_employee')">Insert attendance</button>
-	<button onclick="set_visibility('new_member')">Make new Member</button>
-	<button onclick="set_visibility('insert_transaction')">Insert Transaction</button>
+	<button onclick="set_visibility('new_member')">Add new Member</button>
 	<button onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
-	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>
 	<button onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
-	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>
+
+	<h1> Insert Data </h1>
+	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
+	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
+	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
+	<button onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
 
 	<div id="form">
 		<!-- Case 2  -->
@@ -89,27 +93,26 @@
 
 		<!--apply for attendance-->
 		<form id="insert_attendance_for_employee" style="display: none;">
+			<br>
 			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id">
+			<input type="text" id="e_id" name="employee_id"><br>
 
 			<label for="at_date">Date</label>
-			<input type="date" id="at_date" name="date">
+			<input type="date" id="at_date" name="date"><br>
 
 			<label for="in_time">Time In</label>
-			<input type="time" id="in_time" name="time_in">
+			<input type="time" id="in_time" name="time_in"><br>
 
 			<label for="out_time">Time out</label>
-			<input type="time" id="out_time" name="time_out">
+			<input type="time" id="out_time" name="time_out"><br>
 			
-			</br>
-			
-			<label for="leave">Leave or not</label>
-			<input type="text" id="leave" name="leave">
+			<label for="leave">Leave</label>
+			<input type="checkbox" id="leave" name="leave" value = "Yes"><br>
 
 			<label for="b_hours">Break Hours</label>
-			<input type="number" id="b_hours" name="break_hours">
+			<input type="number" id="b_hours" name="break_hours"><br>
 
-			<button type="button" onclick="form_post('/attendance','insert_attendance_for_employee')">
+			<button type="button" onclick="form_post('/insert_attendance','insert_attendance_for_employee')">
 				Insert Attendance</button>
 		</form>
 
