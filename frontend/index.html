@@ -38,6 +38,8 @@
 	<button onclick="form_get('/vendors')">Get All Vendors</button>
 	<button onclick="form_get('/customers')">Get All Customers</button>
 	<button onclick="form_get('/attendance')">Get Total Attendance</button>
+	<button onclick="form_get('/stock')">Get All Stock</button>
+	<button onclick="form_get('/customer_accounts')">Get Customer Accounts</button>
 	
 	<h1> Get Specific Data </h1>
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
@@ -52,6 +54,7 @@
 	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
 	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
 	<button onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
+	<button onclick="set_visibility('insert_stock')">Insert Stock</button>
 
 	<div id="form">
 		<!-- Case 2  -->
@@ -233,6 +236,31 @@
 			<input type="text" id="to_id" name="to_account"><br>
 
 			<button type="button" onclick="form_post('/transactions','insert_transaction')">
+				Insert</button>
+		</form>
+
+		<!--Stock-->
+		<form id="insert_stock" style="display: none;">
+
+			<label for="quant">Enter Quantity: </label><br>
+			<input type="text" id="quant" name="quantity"><br>
+
+			<label for="locate">Enter Location: </label><br>
+			<input type="text" id="locate" name="location"><br>
+
+			<label for="t_weight">Enter Weight: </label><br>
+			<input type="text" id="t_weight" name="total_weight"><br>
+
+			<label for="recieve_date">Recieving Date: </label><br>
+			<input type="date" id="recieve_date" name="rec_date"><br>
+
+			<label for="us_date">Use Date: </label><br>
+			<input type="date" id="us_date" name="use_date"><br>
+
+			<label for="stock_type">Type: </label><br>
+			<input type="text" id="stock_type" name="typ"><br>
+
+			<button type="button" onclick="form_post('/add_stock','insert_stock')">
 				Insert</button>
 		</form>
 
