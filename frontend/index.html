@@ -40,6 +40,7 @@
 	<button onclick="form_get('/attendance')">Get Total Attendance</button>
 	<button onclick="form_get('/stock')">Get All Stock</button>
 	<button onclick="form_get('/customer_accounts')">Get Customer Accounts</button>
+	<button onclick="form_get('/orders')">Get Orders</button>
 	
 	<h1> Get Specific Data </h1>
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
@@ -48,6 +49,7 @@
 	<button onclick="set_visibility('new_member')">Add new Member</button>
 	<button onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
 	<button onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
+	<button onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
 
 	<h1> Insert Data </h1>
 	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
@@ -236,7 +238,7 @@
 				Insert</button>
 		</form>
 
-		<!--Stock-->
+		<!--insert Stock-->
 		<form id="insert_stock" style="display: none;">
 
 			<label for="quant">Enter Quantity: </label><br>
@@ -260,6 +262,17 @@
 			<button type="button" onclick="form_post('/add_stock','insert_stock')">
 				Insert</button>
 		</form>
+
+		<!--calculate wage-->
+		<br>
+		<form id="wage_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+			<button type="button" onclick="form_get('/wage','wage_for_employee')">
+				Get Wage</button>
+		</form>
+
+
 
 	</div>
 	<div id="output"></div>
