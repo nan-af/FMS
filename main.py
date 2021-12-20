@@ -296,50 +296,50 @@ async def orders(customer_id=Form(...),vendor_id=Form(...), amount=Form(...),qua
     with engine.begin() as con:
         con.execute(text('''
         with c_id_id as (
-            select customer_id from employee
+            select account_id from customer
             where customer_id = :c_id
         )
 
         with v_id_id as (
-            select vendor_id from employee
+            select account_id from vendor
             where vendor_id = :v_id
         )
 
         UPDATE accounts
         SET closing_balance = closing_balance - :amt
-        WHERE account_id = (select * from customer_id);
+        WHERE account_id = c_id_id;
 
         UPDATE accounts
         SET closing_balance = closing_balance + :amt
-        WHERE account_id = (select * from vendor_id);
+        WHERE account_id = v_id_id;
 
         with tr_id as (
             with c_id_id as (
-                select customer_id from employee
-                where customer_id = :c_id
-            )
+            select account_id from customer
+            where customer_id = :c_id
+        )
 
-            with v_id_id as (
-                    select vendor_id from employee
-                    where vendor_id = :v_id
-                )
+        with v_id_id as (
+            select account_id from vendor
+            where vendor_id = :v_id
+        )
 
             insert into transactions (amount, tr_date, from_account, to_account)
             values (:amt,
                     :date,
-                    (select * from c_id),
-                    select * from v_id)
+                    c_id_id,
+                    v_id_id)
             returning tr_id
         )
 
         with order_id as (
-            with c_id_id as (
-                select customer_id from employee
-                where customer_id = :c_id
-            )
+             with c_id_id as (
+            select account_id from customer
+            where customer_id = :c_id
+        )
 
             insert into order (transaction_id, customer_id, quantity, item_name, date)
-            values ((select * from tr_id), (select * from c_id),quantity,item_name,date )
+            values ((select * from tr_id), customer_id,quantity,item_name,date )
             returning order_id
         )
         '''), c_id=customer_id, v_id=vendor_id, amt=amount, quantity=quantity, item_name=item_name, date=date)
