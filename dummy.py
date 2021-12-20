@@ -64,14 +64,14 @@ def create_random_advance():
     return r.text
 
 
-for _ in range(input("Enter number of persons to create:")):
+for _ in range(int(input("Enter number of persons to create:"))):
     p = create_random_person()
     r = requests.post(f'{baseURL}/create', data=p)
 
     print(r.text)
 
-for _ in range(input('Enter number of transactions to create:')):
+for _ in range(int(input('Enter number of transactions to create:'))):
     print(create_random_transaction())
 
-for _ in range(input('Enter number of advance records to create:')):
+for _ in range(int(input('Enter number of advance records to create:'))):
     print(create_random_advance())

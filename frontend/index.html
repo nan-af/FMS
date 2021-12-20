@@ -44,6 +44,10 @@
 	<button onclick="set_visibility('insert_attendence_for_employee')">Insert attendance</button>
 	<button onclick="set_visibility('new_member')">Make new Member</button>
 	<button onclick="set_visibility('insert_transaction')">Insert Transaction</button>
+	<button onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
+	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>
+	<button onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
+	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>
 
 	<div id="form">
 		<!-- Case 2  -->
@@ -62,16 +66,62 @@
 			<button type="button" onclick="form_get('/salary','get_salary_for_employee')">
 				Get Salary</button>
 
-			
+		</form>
+				
 		</form>
 
 		<!--advance for employee-->
 		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/advance','get_advance_for_employee')">
+			<button type="button" onclick="form_get('/advance','get_advance_by_employee')">
 				Get Advance</button>
 		</form>
+
+		</form>
+		<!--allowance for employee-->
+		<form id="get_allowance_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+			<button type="button" onclick="form_get('/allowance','get_allowance_for_employee')">
+				Get All Allowances</button>
+		</form>
+
+		<!--apply for attendance-->
+		<form id="insert_attendance_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+
+			<label for="at_date">Date</label>
+			<input type="date" id="at_date" name="date">
+
+			<label for="in_time">Time In</label>
+			<input type="time" id="in_time" name="time_in">
+
+			<label for="out_time">Time out</label>
+			<input type="time" id="out_time" name="time_out">
+			
+			</br>
+			
+			<label for="leave">Leave or not</label>
+			<input type="text" id="leave" name="leave">
+
+			<label for="b_hours">Break Hours</label>
+			<input type="number" id="b_hours" name="break_hours">
+
+			<button type="button" onclick="form_post('/attendance','insert_attendance_for_employee')">
+				Insert Attendance</button>
+		</form>
+
+		
+		<!--attendance for employee-->
+		<form id="get_attendance_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+			<button type="button" onclick="form_get('/attendance','get_attendance_by_employee')">
+				Get Attendance</button>
+		</form>
+
 
 		<!--apply for advance-->
 		<form id="insert_advance_for_employee" style="display: none;">
@@ -88,7 +138,26 @@
 				Insert Advance</button>
 		</form>
 
-		<!--insert attendence-->		
+		<!--apply for allowance-->
+		<form id="insert_allowance_for_employee" style="display: none;">
+			<label for="e_id">Employee ID</label>
+			<input type="text" id="e_id" name="employee_id">
+
+			<label for="tr_amount">Amount</label>
+			<input type="text" id="tr_amount" name="amount">
+
+			<label for="tr_date">Date</label>
+			<input type="date" id="tr_date" name="date">
+			
+			<label for="a_type">Type</label>
+			<input type="text" id="a_type" name="allowance_type">
+
+			<button type="button" onclick="form_post('/allowance','insert_allowance_for_employee')">
+				Insert Allowance</button>
+		</form>
+
+		<!--insert attendence-->
+		
 		<form id="insert_attendence_for_employee" style="display: none;">
 			
 			<br>
