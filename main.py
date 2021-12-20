@@ -141,20 +141,59 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
 
     return "Advance updated"
 
-
-@app.get("/allowances")
+@app.get("/allowance")
 async def get_allowance_by_employee(employee_id):
-    pass
+    with engine.begin() as con:
+        allowance_table = con.execute(text("""
+        select * from allowance
+        where employee_id = :e_id
+        """), e_id = employee_id)
+    return json2html.convert(json=list(allowance_table))
 
 
-@app.post('/allowances')
+@app.post('/allowance')
 async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), allowance_type=Form(...), date=Form(...)):
-    pass
+    with engine.begin() as con:
+        con.execute(text('''
+        with acc_id as (
+            select account_id from employee
+            where employee_id = :e_id
+        )
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amt
+        WHERE account_id = (select * from acc_id);
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amt
+        WHERE account_id = 1;
+
+        with tr_id as (
+            with acc_id as (
+                select account_id from employee
+                where employee_id = :e_id
+            )
+
+            insert into transactions (amount, tr_date, from_account, to_account)
+            values (:amt,
+                    :date,
+                    (select * from acc_id),
+                    1)
+            returning tr_id
+        )
+        insert into allowance (transaction_id, employee_id,type)
+        values ((select * from tr_id), :e_id, :a_type)
+        '''), e_id=employee_id, amt=amount, date=date,a_type = allowance_type)
+        return "Allowances record updated successfully"    
 
 
 @app.get("/attendance")
 async def get_attendance_by_employee(employee_id):
-    pass
+    with engine.begin() as con:
+        attendance_table = con.execute(text("""
+        select * from attendance
+        where employee_id = :e_id
+        """), e_id = employee_id)
+    return json2html.convert(json=list(attendance_table))
 
 
 # Case 10: insert employee attendance
@@ -162,8 +201,8 @@ async def get_attendance_by_employee(employee_id):
 async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
     with engine.begin() as con:
         attendance = con.execute(text("""
-        INSERT INTO attendance VALUES
-        (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
+        INSERT INTO attendance
+        VALUES (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
         """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
     return "Employee attendance updated"
 
