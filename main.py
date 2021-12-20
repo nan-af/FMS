@@ -197,14 +197,15 @@ async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), all
         return "Allowances record updated successfully"    
 
 # case 14: get employee attendance
-@app.get("/attendance")
+@app.get("/get_attendance")
 async def get_attendance_by_employee(employee_id):
+    print(employee_id)
     with engine.begin() as con:
-        attendance_table = con.execute(text("""
+        txns = con.execute(text("""
         select * from attendance
         where employee_id = :e_id
-        """), e_id = employee_id)
-    return json2html.convert(json=list(attendance_table))
+        """), e_id=employee_id)
+    return json2html.convert(json=list(txns))
 
 # case 15: view stock easy, select * from stock
 @app.get("/stock")
