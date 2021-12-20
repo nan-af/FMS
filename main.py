@@ -104,7 +104,17 @@ async def advance(employee_id):
         """), emp_id=employee_id)
     return json2html.convert(list(advance))
 
+# Case 10: insert employee attendance
+@app.post("/insert_attendance")
+async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
+    with engine.begin() as con:
+        at = con.execute(text("""
+        INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
+        VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
+        """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+    return "Attendance record updated"
 
+# Case 11: add advance
 @app.post("/advance")
 async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
     with engine.begin() as con:
@@ -141,6 +151,7 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
 
     return "Advance updated"
 
+# case 12: Get employee allowance
 @app.get("/allowance")
 async def get_allowance_by_employee(employee_id):
     with engine.begin() as con:
@@ -150,7 +161,7 @@ async def get_allowance_by_employee(employee_id):
         """), e_id = employee_id)
     return json2html.convert(json=list(allowance_table))
 
-
+# case 13: Insert employee allowance
 @app.post('/allowance')
 async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), allowance_type=Form(...), date=Form(...)):
     with engine.begin() as con:
@@ -185,7 +196,7 @@ async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), all
         '''), e_id=employee_id, amt=amount, date=date,a_type = allowance_type)
         return "Allowances record updated successfully"    
 
-
+# case 14: get employee attendance
 @app.get("/attendance")
 async def get_attendance_by_employee(employee_id):
     with engine.begin() as con:
@@ -195,28 +206,15 @@ async def get_attendance_by_employee(employee_id):
         """), e_id = employee_id)
     return json2html.convert(json=list(attendance_table))
 
-
-# Case 10: insert employee attendance
-@app.post("/insert_attendance")
-async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
+# case 15: view stock easy, select * from stock
+@app.get("/stock")
+async def stock():
     with engine.begin() as con:
-        at = con.execute(text("""
-        INSERT INTO attendance (employee_id, at_date, time_in, time_out, leave, break_hours)
-        VALUES (:employee_id, :date, :time_in, :time_out, :leave, :break_hours);
-        """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return "Attendance record updated"
+        stock = con.execute(text("""
+        select * from stock """))
+    return json2html.convert(list(stock))
 
-# @app.post("/insert_attendance")
-# async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
-#     with engine.begin() as con:
-#         attendance = con.execute(text("""
-#         INSERT INTO attendance (employee_id, current_date, time_in, time_out, leave, break_hours)
-#         VALUES (:employee_id, :date, :time_in, :time_out, :leave, :break_hours)
-#         """), employee_id=employee_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-#     return "Employee attendance updated"
-
-
-# 11 View customer accounts easy, select * from accounts
+# Case 16: View customer accounts easy, select * from accounts
 @app.get("/customer_accounts")
 async def customer_accounts():
     with engine.begin() as con:
@@ -228,24 +226,7 @@ async def customer_accounts():
     return json2html.convert(list(accounts))
 
 
-# # @app.get("/customers")
-# async def getcustomers():
-#     with engine.begin() as con:
-#         customersList = con.execute(text("""
-#         select id from customers
-#         """))
-#     return customersList
 
-
-# 12 view stock easy, select * from stock
-@app.get("/stock")
-async def stock():
-    with engine.begin() as con:
-        stock = con.execute(text("""
-        select * from stock """))
-    return json2html.convert(list(stock))
-
-# 13 view income DONE AS CASE 8
 # 14 view leaves total - all taken leaves of an employee
 
 
@@ -259,7 +240,7 @@ async def stock():
 #     return str(total-leaves)+" remaining for employee with employee id {employeeid}."
 
 
-# 15 add new item in inventory update stock
+# 17 add new item in inventory update stock
 @app.post("/add_stock")
 async def update_stock(quantity=Form(...), location=Form(...), total_weight=Form(...), rec_date=Form(...), use_date=Form(...), typ=Form(...)):
     with engine.begin() as con:
@@ -270,7 +251,7 @@ async def update_stock(quantity=Form(...), location=Form(...), total_weight=Form
     return "Stock record updated"
 
 
-# 16 remove item from stock
+# 18 remove item from stock
 @app.post("/delete_stock")
 async def remove_stock(stock_ID):
     with engine.begin() as con:
@@ -281,7 +262,7 @@ async def remove_stock(stock_ID):
     return "Stock deleted"
 
 
-# 17 calculate employee wage income +/- overtime/undertime
+# 19 calculate employee wage income +/- overtime/undertime
 @app.get("/wage")
 async def wage(employee_id):
     with engine.begin() as con:
@@ -298,7 +279,7 @@ async def wage(employee_id):
     return calculated_wage
 
 
-# 18 view orders select * from orders where status <> completed
+# 20 view orders select * from orders where status <> completed
 @app.get("/orders")
 async def orders():
     with engine.begin() as con:
@@ -307,7 +288,7 @@ async def orders():
     return json2html.convert(list(orders))
 
 
-# 19 insert a transaction DONEE
+# 21 insert a transaction DONEE
 @app.post("/transactions")
 async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...)):
     with engine.begin() as con:
@@ -336,7 +317,7 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
 #     return {"message": list(accounts)}
 
 
-# 21 create new customer/vendor/employee DONEE
+# 22 create new customer/vendor/employee DONEE
 @app.post("/create")
 async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=Form(...)):
     print(hourly_wage)
