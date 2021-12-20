@@ -93,6 +93,7 @@ with engine.connect() as con:
     con.execute(text("""
     create table attendance(
         employee_id integer not null,
+        at_date date,
         transaction_id integer primary key,
         time_in time not null,
         time_out time not null,
