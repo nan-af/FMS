@@ -46,13 +46,13 @@
 	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
 	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
 	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
-	<button onclick="set_visibility('new_member')">Add new Member</button>
 	<button onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
 	<button onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
 	<button onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
 	
 
 	<h1> Insert Data </h1>
+	<button onclick="set_visibility('new_member')">Add New Member</button>
 	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
 	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
 	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
@@ -100,7 +100,7 @@
 
 		<!--apply for attendance-->
 		<form id="insert_attendance_for_employee" style="display: none;">
-			<br>
+			
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id"><br><br> 
 
@@ -261,26 +261,26 @@
 		<!--insert Stock-->
 		<form id="insert_stock" style="display: none;">
 
-			<label for="quant">Enter Quantity: </label><br>
-			<input type="text" id="quant" name="quantity"><br>
+			<label for="quant">Enter Quantity: </label>
+			<input type="text" id="quant" name="quantity"><br><br>
 
-			<label for="locate">Enter Location: </label><br>
-			<input type="text" id="locate" name="location"><br>
+			<label for="locate">Enter Location: </label>
+			<input type="text" id="locate" name="location"><br><br>
 
-			<label for="t_weight">Enter Weight: </label><br>
-			<input type="text" id="t_weight" name="total_weight"><br>
+			<label for="t_weight">Enter Weight: </label>
+			<input type="text" id="t_weight" name="total_weight"><br><br>
 
-			<label for="recieve_date">Recieving Date: </label><br>
-			<input type="date" id="recieve_date" name="rec_date"><br>
+			<label for="recieve_date">Recieving Date: </label>
+			<input type="date" id="recieve_date" name="rec_date"><br><br>
 
-			<label for="us_date">Use Date: </label><br>
-			<input type="date" id="us_date" name="use_date"><br>
+			<label for="us_date">Use Date: </label>
+			<input type="date" id="us_date" name="use_date"><br><br>
 
-			<label for="stock_type">Type: </label><br>
-			<input type="text" id="stock_type" name="typ"><br>
+			<label for="stock_type">Stock Type: </label>
+			<input type="text" id="stock_type" name="typ"><br><br>
 
 			<button type="button" onclick="form_post('/add_stock','insert_stock')">
-				Insert</button>
+				Insert Stock</button>
 		</form>
 
 		<!--calculate wage-->
