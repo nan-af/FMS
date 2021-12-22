@@ -65,7 +65,7 @@ async def vendors():
     return json2html.convert(list(vendors))
 
 
-# Case 5: view all customers DONE
+# Case 6: view all customers DONE
 @app.get("/customers")
 async def customers():
     with engine.begin() as con:
@@ -83,8 +83,8 @@ async def attendance():
     return json2html.convert(list(attendance))
 
 
-# Case 8: view employee salary DONE
-@app.get("/salary")
+# Case 8: view employee hourly wage DONE
+@app.get("/get_wage")
 async def salary(employee_id):
     with engine.begin() as con:
         salary = con.execute(text("""
@@ -94,13 +94,13 @@ async def salary(employee_id):
     return json2html.convert(json=list(salary))
 
 
-# Case 9: view employee advance DONE
-@app.get("/advance")
+# Case 9: get employee advance DONE
+@app.get("/get_advance")
 async def advance(employee_id):
     with engine.begin() as con:
         advance = con.execute(text("""
-        select amount from transactions, advance
-        where advance.employee_id = :emp_id
+        select amount from transactions full outer join advance on transaction_id = tr_id
+        where from_account = :emp_id
         """), emp_id=employee_id)
     return json2html.convert(list(advance))
 
@@ -141,7 +141,7 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
             insert into transactions (amount, tr_date, from_account, to_account)
             values (:amt,
                     :date,
-                    (select * from acc_id),
+                    :e_id,
                     1)
             returning tr_id
         )
@@ -156,7 +156,8 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
 async def get_allowance_by_employee(employee_id):
     with engine.begin() as con:
         allowance_table = con.execute(text("""
-        select * from allowance
+        select type, employee_id, transaction_id, amount
+        from allowance full outer join transactions on transaction_id = tr_id
         where employee_id = :e_id
         """), e_id = employee_id)
     return json2html.convert(json=list(allowance_table))
@@ -288,10 +289,8 @@ async def orders():
         select * from orders """))
     return json2html.convert(list(orders))
 
-#account closing balance
-#make transaction
-#make new row for order
-@app.post("/orders")
+# Case 23: place an order
+@app.post("/add_stock")
 async def orders(customer_id=Form(...),vendor_id=Form(...), amount=Form(...),quanity=Form(...), item_name=Form(...), date=Form(...)):
     with engine.begin() as con:
         con.execute(text('''

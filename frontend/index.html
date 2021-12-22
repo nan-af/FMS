@@ -31,7 +31,7 @@
 	</script>
 </head>
 
-<body style="background-color:rgb(90, 74, 182);">
+<body style="background-color:rgb(225, 222, 245);">
 	<div class="jumbotron text-center" style="background-color:rgb(151, 137, 223);">
 		<h1 style="font-family: Arial">Factory Management System</h1>
 		<p style="font-family: Arial">Welcome to the factory's main portal to manage all essential data</p>
@@ -91,7 +91,7 @@
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
-			<button type="button" onclick="form_get('/salary','get_salary_for_employee')">
+			<button type="button" onclick="form_get('/wage','get_salary_for_employee')">
 				Get Salary</button>
 
 		</form>
@@ -100,7 +100,7 @@
 		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/advance','get_advance_by_employee')">
+			<button type="button" onclick="form_get('/get_advance','get_advance_for_employee')">
 				Get Advance</button>
 		</form>
 
@@ -301,7 +301,7 @@
 		<form id="wage_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/wage','wage_for_employee')">
+			<button type="button" onclick="form_get('/get_wage','wage_for_employee')">
 				Get Wage</button>
 		</form>
 
