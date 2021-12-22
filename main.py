@@ -280,13 +280,71 @@ async def wage(employee_id):
     return calculated_wage
 
 
-# 20 view orders select * from orders where status <> completed DONE
+# 20 view orders select * from orders where status <> completed
 @app.get("/orders")
 async def orders():
     with engine.begin() as con:
         orders = con.execute(text("""
         select * from orders """))
     return json2html.convert(list(orders))
+
+#account closing balance
+#make transaction
+#make new row for order
+@app.post("/orders")
+async def orders(customer_id=Form(...),vendor_id=Form(...), amount=Form(...),quanity=Form(...), item_name=Form(...), date=Form(...)):
+    with engine.begin() as con:
+        con.execute(text('''
+        with c_id_id as (
+            select account_id from customer
+            where customer_id = :c_id
+        )
+
+        with v_id_id as (
+            select account_id from vendor
+            where vendor_id = :v_id
+        )
+
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amt
+        WHERE account_id = c_id_id;
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amt
+        WHERE account_id = v_id_id;
+
+        with tr_id as (
+            with c_id_id as (
+            select account_id from customer
+            where customer_id = :c_id
+        )
+
+        with v_id_id as (
+            select account_id from vendor
+            where vendor_id = :v_id
+        )
+
+            insert into transactions (amount, tr_date, from_account, to_account)
+            values (:amt,
+                    :date,
+                    c_id_id,
+                    v_id_id)
+            returning tr_id
+        )
+
+        with order_id as (
+             with c_id_id as (
+            select account_id from customer
+            where customer_id = :c_id
+        )
+
+            insert into order (transaction_id, customer_id, quantity, item_name, date)
+            values ((select * from tr_id), customer_id,quantity,item_name,date )
+            returning order_id
+        )
+        '''), c_id=customer_id, v_id=vendor_id, amt=amount, quantity=quantity, item_name=item_name, date=date)
+
+    return "Order Added"
 
 
 # 21 insert a transaction DONE
