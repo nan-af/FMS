@@ -3,6 +3,7 @@
 <head>
 	<title>FMS</title>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script>
 		function set_visibility(id) {
 			for (element of document.getElementById("form").getElementsByTagName('form')) {
@@ -30,36 +31,52 @@
 	</script>
 </head>
 
-<body>
-	<h1> Get Overall Data </h1>
-	<button onclick="form_get('/accounts')">Get All Accounts</button>
-	<button onclick="form_get('/transactions')">Get All Transactions</button>
-	<button onclick="form_get('/employees')">Get All Employees</button>
-	<button onclick="form_get('/vendors')">Get All Vendors</button>
-	<button onclick="form_get('/customers')">Get All Customers</button>
-	<button onclick="form_get('/attendance')">Get Total Attendance</button>
-	<button onclick="form_get('/stock')">Get All Stock</button>
-	<button onclick="form_get('/customer_accounts')">Get Customer Accounts</button>
-	<button onclick="form_get('/orders')">Get Orders</button>
-	</br>
-	<h1> Get Specific Data </h1>
-	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
-	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
-	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
-	<button onclick="set_visibility('new_member')">Add new Member</button>
-	<button onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
-	<button onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
-	<button onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
-	</br>
-	<h1> Insert Data </h1>
-	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
-	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
-	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
-	<button onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
-	<button onclick="set_visibility('insert_stock')">Insert Stock</button>
+<body style="background-color:rgb(225, 222, 245);">
+	<div class="jumbotron text-center" style="background-color:rgb(151, 137, 223);">
+		<h1 style="font-family: Arial">Factory Management System</h1>
+		<p style="font-family: Arial">Welcome to the factory's main portal to manage all essential data</p>
+	  </div>
+
+	<h1 style="text-align:center"> Get Overall Data </h1>
+	<div style="text-align:center">
+		<button type="button" class="btn btn-outline" onclick="form_get('/accounts')">Get All Accounts</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/transactions')">Get All Transactions</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/employees')">Get All Employees</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/vendors')">Get All Vendors</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/customers')">Get All Customers</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/attendance')">Get Total Attendance</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/stock')">Get All Stock</button>
+	<button type="button" class="btn btn-outline" type="button" class="btn btn-outline" onclick="form_get('/customer_accounts')">Get Customer Accounts</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/orders')">Get Orders</button>
+	</div>
+
+	<h1 style="text-align:center;margin-top:50px;"> Get Specific Data </h1>
+	<div style="text-align:center">
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
+	</div>
+	
+	
+
+	<h1 style="text-align:center;margin-top:50px;"> Insert Data </h1>
+	<div style="text-align:center">
+	<button type="button" class="btn btn-outline" onclick="set_visibility('new_member')">Add New Member</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_stock')">Insert Stock</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('del_stock')">Delete Stock Item</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('add_orders')">Place Order</button>
+	</div>
 
 	<div id="form">
 		<!-- Case 2  -->
+		<br>
 		<form id="get_transactions_for_account" style="display: none;">
 			<label for="a_id">Account ID</label>
 			<input type="text" id="a_id" name="account_id">
@@ -67,12 +84,14 @@
 			<button type="button" onclick="form_get('/account','get_transactions_for_account')">
 				Get transactions</button>
 		</form>
+
+
 		<!-- Case 8 -->
 		<form id="get_salary_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
-			<button type="button" onclick="form_get('/salary','get_salary_for_employee')">
+			<button type="button" onclick="form_get('/wage','get_salary_for_employee')">
 				Get Salary</button>
 
 		</form>
@@ -81,7 +100,8 @@
 		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/advance','get_advance_for_employee')">
+
+			<button type="button" onclick="form_get('/get_advance','get_advance_for_employee')">
 				Get Advance</button>
 		</form>
 
@@ -95,27 +115,27 @@
 
 		<!--apply for attendance-->
 		<form id="insert_attendance_for_employee" style="display: none;">
-			<br>
+			
 			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id"><br>
+			<input type="text" id="e_id" name="employee_id"><br><br> 
 
 			<label for="e_id">Transaction ID</label>
-			<input type="text" id="t_id" name="transaction_id"><br>
+			<input type="text" id="t_id" name="transaction_id"><br><br>
 
 			<label for="at_date">Date</label>
-			<input type="date" id="at_date" name="date"><br>
+			<input type="date" id="at_date" name="date"><br><br>
 
 			<label for="in_time">Time In</label>
-			<input type="time" id="in_time" name="time_in"><br>
+			<input type="time" id="in_time" name="time_in"><br><br>
 
 			<label for="out_time">Time out</label>
-			<input type="time" id="out_time" name="time_out"><br>
+			<input type="time" id="out_time" name="time_out"><br><br>
 			
 			<label for="leave">Leave</label>
-			<input type="checkbox" id="leave" name="leave" value = "Yes"><br>
+			<input type="checkbox" id="leave" name="leave" value = "Yes"><br><br>
 
 			<label for="b_hours">Break Hours</label>
-			<input type="number" id="b_hours" name="break_hours"><br>
+			<input type="number" id="b_hours" name="break_hours"><br><br>
 
 			<button type="button" onclick="form_post('/insert_attendance','insert_attendance_for_employee')">
 				Insert Attendance</button>
@@ -134,13 +154,13 @@
 		<!--apply for advance-->
 		<form id="insert_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id">
+			<input type="text" id="e_id" name="employee_id"><br><br>
 
 			<label for="tr_amount">Amount</label>
-			<input type="text" id="tr_amount" name="amount">
+			<input type="text" id="tr_amount" name="amount"><br><br>
 
 			<label for="tr_date">Date</label>
-			<input type="date" id="tr_date" name="date">
+			<input type="date" id="tr_date" name="date"><br><br>
 
 			<button type="button" onclick="form_post('/advance','insert_advance_for_employee')">
 				Insert Advance</button>
@@ -149,41 +169,47 @@
 		<!--apply for allowance-->
 		<form id="insert_allowance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id">
+			<input type="text" id="e_id" name="employee_id"><br><br>
 
 			<label for="tr_amount">Amount</label>
-			<input type="text" id="tr_amount" name="amount">
+			<input type="text" id="tr_amount" name="amount"><br><br>
 
 			<label for="tr_date">Date</label>
-			<input type="date" id="tr_date" name="date">
+			<input type="date" id="tr_date" name="date"><br><br>
 			
 			<label for="a_type">Type</label>
-			<input type="text" id="a_type" name="allowance_type">
+			<input type="text" id="a_type" name="allowance_type"><br><br>
 
 			<button type="button" onclick="form_post('/allowance','insert_allowance_for_employee')">
 				Insert Allowance</button>
 		</form>
 
 		<!--insert attendence-->
-		
-		<form id="insert_attendence_for_employee" style="display: none;">
+	<!--	<form id="insert_attendence_for_employee" style="display: none;">
 			
 			<br>
 			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id"><br><br>
-
+			<input type="text" id="e_id" name="employee_id">
+			
+			<br>
+			
+			<br>
 			<label for="at_date">Date</label>
 			<input type="date" id="at_date" name="date"><br><br>
 
+			<br>
 			<label for="at_time_in">Start Time</label>
 			<input type="time" id="at_time_in" name="time_in"><br><br>
 			
+			<br>
 			<label for="at_time_out">Leave Time</label>
 			<input type="time" id="at_time_out" name="time_out"><br><br>
 
+			<br>
 			<label for="at_leave">Leave</label>
 			<input type="checkbox" id="at_leave" name="leave", value="Yes"><br><br>
 			
+			<br>
 			<label for="at_hours">Break Hours</label>
 			<input type="text" id="at_hours" name="break_hours"><br><br>
 
@@ -191,48 +217,57 @@
 			<button type="button" onclick="form_post('/advance','insert_attendence_for_employee')">
 				Insert Attendance</button>
 		</form>
+	-->
 
 		<!-- Case 21 -->
 		<form id="new_member" style="display: none;">
-			<label for="p_id">Choose Position</label><br>
+			<label for="p_id">Choose Position</label>
 			<select name="role" id="new_member">
 				<option value="employee">Employee</option>
 				<option value="customer">Customer</option>
 				<option value="vendor">Vendor</option>
 			</select><br>
-
-			<label for="p_name">Enter Name:</label><br>
-			<input type="text" id="p_name" name="name"><br>
-
-			<label for="p_address">Enter Address:</label><br>
-			<input type="text" id="p_address" name="address"><br>
-
-			<label for="p_phone">Enter Phone Number:</label><br>
-			<input type="text" id="p_phone" name="phone"><br>
-
-			<label for="p_open_balance">Enter Opening Balance:</label><br>
-			<input type="text" id="p_open_balance" name="opening_balance"><br>
-
-			<label for="p_wage">Enter Hourly Wage:</label><br>
+			<br>
+			<label for="p_name">Enter Name:</label>
+			<input type="text" id="p_name" name="name">
+			<br>
+			<br>
+			<label for="p_address">Enter Address:</label>
+			<input type="text" id="p_address" name="address">
+			
+			<br>
+			<br>
+			<label for="p_phone">Enter Phone Number:</label>
+			<input type="text" id="p_phone" name="phone">
+			
+			<br>
+			<br>
+			<label for="p_open_balance">Enter Opening Balance:</label>
+			<input type="text" id="p_open_balance" name="opening_balance">
+			
+			<br>
+			<br>
+			<label for="p_wage">Enter Hourly Wage:</label>
 			<input type="text" id="p_wage" name="hourly_wage">
-
+			<br>
+			<br>
 			<button type="button" onclick="form_post('/create','new_member')">
 				Add Person</button>		
 		</form>
 
 		<!--Case 19 -->
 		<form id="insert_transaction" style="display: none;">
-			<label for="amount_id">Enter Amount: </label><br>
-			<input type="text" id="amount_id" name="amount"><br>
+			<label for="amount_id">Enter Amount: </label>
+			<input type="text" id="amount_id" name="amount"><br><br>
 
-			<label for="date_id">Enter Date: </label><br>
-			<input type="date" id="date_id" name="date"><br>
+			<label for="date_id">Enter Date: </label>
+			<input type="date" id="date_id" name="date"><br><br>
 
-			<label for="from_id">From Account: </label><br>
-			<input type="text" id="from_id" name="from_account"><br>
+			<label for="from_id">From Account: </label>
+			<input type="text" id="from_id" name="from_account"><br><br>
 
-			<label for="to_id">To Account: </label><br>
-			<input type="text" id="to_id" name="to_account"><br>
+			<label for="to_id">To Account: </label>
+			<input type="text" id="to_id" name="to_account"><br><br>
 
 			<button type="button" onclick="form_post('/transactions','insert_transaction')">
 				Insert</button>
@@ -241,41 +276,71 @@
 		<!--insert Stock-->
 		<form id="insert_stock" style="display: none;">
 
-			<label for="quant">Enter Quantity: </label><br>
-			<input type="text" id="quant" name="quantity"><br>
+			<label for="quant">Enter Quantity: </label>
+			<input type="text" id="quant" name="quantity"><br><br>
 
-			<label for="locate">Enter Location: </label><br>
-			<input type="text" id="locate" name="location"><br>
+			<label for="locate">Enter Location: </label>
+			<input type="text" id="locate" name="location"><br><br>
 
-			<label for="t_weight">Enter Weight: </label><br>
-			<input type="text" id="t_weight" name="total_weight"><br>
+			<label for="t_weight">Enter Weight: </label>
+			<input type="text" id="t_weight" name="total_weight"><br><br>
 
-			<label for="recieve_date">Recieving Date: </label><br>
-			<input type="date" id="recieve_date" name="rec_date"><br>
+			<label for="recieve_date">Recieving Date: </label>
+			<input type="date" id="recieve_date" name="rec_date"><br><br>
 
-			<label for="us_date">Use Date: </label><br>
-			<input type="date" id="us_date" name="use_date"><br>
+			<label for="us_date">Use Date: </label>
+			<input type="date" id="us_date" name="use_date"><br><br>
 
-			<label for="stock_type">Type: </label><br>
-			<input type="text" id="stock_type" name="typ"><br>
+			<label for="stock_type">Stock Type: </label>
+			<input type="text" id="stock_type" name="typ"><br><br>
 
 			<button type="button" onclick="form_post('/add_stock','insert_stock')">
-				Insert</button>
+				Insert Stock</button>
 		</form>
 
 		<!--calculate wage-->
-		<br>
 		<form id="wage_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/wage','wage_for_employee')">
+			<button type="button" onclick="form_get('/get_wage','wage_for_employee')">
 				Get Wage</button>
 		</form>
 
 
+		<!--Delete stock-->
+		<form id="del_stock" style="display: none;">
+			<label for="s_id">Stock ID</label>
+			<input type="text" id="s_id" name="stock_ID">
+			<button type="button" onclick="form_post('/delete_stock','del_stock')">
+				Delete Stock</button>
+		</form>
+        
+		<!-- Place order-->
+		<form id="add_orders" style="display: none;">
+            <label for="from_id">From Account: </label><br>
+            <input type="text" id="from_id" name="from_account"><br>
+
+            <label for="to_id">To Account: </label><br>
+            <input type="text" id="to_id" name="to_account"><br>
+
+            <label for="amount_id">Enter Amount: </label><br>
+            <input type="text" id="amount_id" name="amount"><br>
+
+            <label for="quantity">Enter Quantity: </label><br>
+            <input type="text" id="qty" name="quantity"><br>
+
+            <label for="item_name">Item Name: </label><br>
+            <input type="text" id="item_name" name="item_name"><br>
+
+            <label for="date_id">Enter Date: </label><br>
+            <input type="date" id="date_id" name="date"><br>
+
+            <button type="button" onclick="form_post('/orders','add_orders')">
+                Insert Order</button>
+        </form>
 
 	</div>
-	<div id="output"></div>
+	<div id="output"> </div>
 </body>
 
 </html>
