@@ -87,7 +87,7 @@ async def attendance():
 async def salary(employee_id):
     with engine.begin() as con:
         salary = con.execute(text("""
-        select hourly_wage from employee
+        select employee_id,name,hourly_wage from employee
         where employee_id = :emp_id
         """), emp_id=employee_id)
     return json2html.convert(json=list(salary))
@@ -106,12 +106,13 @@ async def advance(employee_id):
 # Case 10: insert employee attendance DONE
 @app.post("/insert_attendance")
 async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
-    with engine.begin() as con:
-        at = con.execute(text("""
-        INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
-        VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
-        """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return "Attendance record updated"
+    # with engine.begin() as con:
+        z = (time_out-time_in)
+        # at = con.execute(text("""
+        # INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
+        # VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
+        # """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+    return z #"Attendance record updated"
 
 # Case 11: add advance DONE
 @app.post("/advance")
