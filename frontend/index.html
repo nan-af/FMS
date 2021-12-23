@@ -58,6 +58,9 @@
 		<button type="button" class="btn btn-outline" onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
 		<button type="button" class="btn btn-outline" onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
 		<button type="button" class="btn btn-outline" onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_one_vendor')">Get Accounts of Specific Vendor</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_one_customer')">Get Accounts of Specific Customer</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_one_employee')">Get Accounts of Specific Employee</button>
 	</div>
 	
 	
@@ -150,6 +153,30 @@
 				Get Attendance</button>
 		</form>
 
+		<!--Accounts of One Vendor -->
+		<form id="get_one_vendor" style="display: none;">
+			<label for="v_id">Vendor ID: </label>
+			<input type="text" id="v_id" name="vendor_id">
+			<button type="button" onclick="form_get('/one_vendor','get_one_vendor')">
+				Get Account</button>
+		</form>
+
+		<!--Accounts of One Customer -->
+		<form id="get_one_customer" style="display: none;">
+			<label for="c_id">Customer ID: </label>
+			<input type="text" id="c_id" name="customer_id">
+			<button type="button" onclick="form_get('/one_customer','get_one_customer')">
+				Get Account</button>
+		</form>
+
+		<!--Accounts of One Employee -->
+		<form id="get_one_employee" style="display: none;">
+			<label for="e_id">Employee ID: </label>
+			<input type="text" id="e_id" name="employee_id">
+			<button type="button" onclick="form_get('/one_employee','get_one_employee')">
+				Get Account</button>
+		</form>
+
 
 		<!--apply for advance-->
 		<form id="insert_advance_for_employee" style="display: none;">
@@ -183,41 +210,6 @@
 			<button type="button" onclick="form_post('/allowance','insert_allowance_for_employee')">
 				Insert Allowance</button>
 		</form>
-
-		<!--insert attendence-->
-	<!--	<form id="insert_attendence_for_employee" style="display: none;">
-			
-			<br>
-			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id">
-			
-			<br>
-			
-			<br>
-			<label for="at_date">Date</label>
-			<input type="date" id="at_date" name="date"><br><br>
-
-			<br>
-			<label for="at_time_in">Start Time</label>
-			<input type="time" id="at_time_in" name="time_in"><br><br>
-			
-			<br>
-			<label for="at_time_out">Leave Time</label>
-			<input type="time" id="at_time_out" name="time_out"><br><br>
-
-			<br>
-			<label for="at_leave">Leave</label>
-			<input type="checkbox" id="at_leave" name="leave", value="Yes"><br><br>
-			
-			<br>
-			<label for="at_hours">Break Hours</label>
-			<input type="text" id="at_hours" name="break_hours"><br><br>
-
-
-			<button type="button" onclick="form_post('/advance','insert_attendence_for_employee')">
-				Insert Attendance</button>
-		</form>
-	-->
 
 		<!-- Case 21 -->
 		<form id="new_member" style="display: none;">
@@ -276,6 +268,9 @@
 		<!--insert Stock-->
 		<form id="insert_stock" style="display: none;">
 
+			<label for="own">Enter Owner ID: </label>
+			<input type="text" id="own" name="owner"><br><br>
+
 			<label for="quant">Enter Quantity: </label>
 			<input type="text" id="quant" name="quantity"><br><br>
 
@@ -286,13 +281,13 @@
 			<input type="text" id="t_weight" name="total_weight"><br><br>
 
 			<label for="recieve_date">Recieving Date: </label>
-			<input type="date" id="recieve_date" name="rec_date"><br><br>
+			<input type="date" id="recieve_date" name="received_date"><br><br>
 
 			<label for="us_date">Use Date: </label>
 			<input type="date" id="us_date" name="use_date"><br><br>
 
 			<label for="stock_type">Stock Type: </label>
-			<input type="text" id="stock_type" name="typ"><br><br>
+			<input type="text" id="stock_type" name="type"><br><br>
 
 			<button type="button" onclick="form_post('/add_stock','insert_stock')">
 				Insert Stock</button>
@@ -317,27 +312,28 @@
         
 		<!-- Place order-->
 		<form id="add_orders" style="display: none;">
-            <label for="from_id">From Account: </label><br>
-            <input type="text" id="from_id" name="from_account"><br>
+			
+			<label for="c_id">Customer ID: </label>
+			<input type="text" id="c_id" name="customer_id"><br><br> 
 
-            <label for="to_id">To Account: </label><br>
-            <input type="text" id="to_id" name="to_account"><br>
+			<label for="v_id">Vendor ID: </label>
+			<input type="text" id="v_id" name="vendor_id"><br><br>
 
-            <label for="amount_id">Enter Amount: </label><br>
-            <input type="text" id="amount_id" name="amount"><br>
+			<label for="amt">Amount: </label>
+			<input type="text" id="amt" name="amount"><br><br>
 
-            <label for="quantity">Enter Quantity: </label><br>
-            <input type="text" id="qty" name="quantity"><br>
+			<label for="qty"> Quantity: </label>
+			<input type="text" id="qty" name="quantity"><br><br>
 
-            <label for="item_name">Item Name: </label><br>
-            <input type="text" id="item_name" name="item_name"><br>
+			<label for="i_name"> Item Name: </label>
+			<input type="text" id="i_name" name="item_name"><br><br>
 
-            <label for="date_id">Enter Date: </label><br>
-            <input type="date" id="date_id" name="date"><br>
+			<label for="date_now">Date</label>
+			<input type="date" id="date_now" name="date"><br><br>
 
-            <button type="button" onclick="form_post('/orders','add_orders')">
-                Insert Order</button>
-        </form>
+			<button type="button" onclick="form_post('/addOrder','add_orders')">
+				Place Order</button>
+		</form>
 
 	</div>
 	<div id="output"> </div>
