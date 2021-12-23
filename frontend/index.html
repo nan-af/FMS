@@ -3,6 +3,7 @@
 <head>
 	<title>FMS</title>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script>
 		function set_visibility(id) {
 			for (element of document.getElementById("form").getElementsByTagName('form')) {
@@ -30,35 +31,53 @@
 	</script>
 </head>
 
-<body>
-	<h1> Get Overall Data </h1>
-	<button onclick="form_get('/accounts')">Get All Accounts</button>
-	<button onclick="form_get('/transactions')">Get All Transactions</button>
-	<button onclick="form_get('/employees')">Get All Employees</button>
-	<button onclick="form_get('/vendors')">Get All Vendors</button>
-	<button onclick="form_get('/customers')">Get All Customers</button>
-	<button onclick="form_get('/attendance')">Get Total Attendance</button>
-	<button onclick="form_get('/stock')">Get All Stock</button>
-	<button onclick="form_get('/customer_accounts')">Get Customer Accounts</button>
-	<button onclick="form_get('/orders')">Get Orders</button>
+<body style="background-color:rgb(225, 222, 245);">
+	<div class="jumbotron text-center" style="background-color:rgb(151, 137, 223);">
+		<h1 style="font-family: Arial">Factory Management System</h1>
+		<p style="font-family: Arial">Welcome to the factory's main portal to manage all essential data</p>
+	  </div>
+
+	<h1 style="text-align:center"> Get Overall Data </h1>
+	<div style="text-align:center">
+		<button type="button" class="btn btn-outline" onclick="form_get('/accounts')">Get All Accounts</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/transactions')">Get All Transactions</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/employees')">Get All Employees</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/vendors')">Get All Vendors</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/all_advance')">Get All Advances Taken</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/all_allowance')">Get All Allowances Taken</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/customers')">Get All Customers</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/attendance')">Get Total Attendance</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/stock')">Get All Stock</button>
+	<button type="button" class="btn btn-outline" type="button" class="btn btn-outline" onclick="form_get('/customer_accounts')">Get Customer Accounts</button>
+	<button type="button" class="btn btn-outline" onclick="form_get('/orders')">Get Orders</button>
+	</div>
+
+	<h1 style="text-align:center;margin-top:50px;"> Get Specific Data </h1>
+	<div style="text-align:center">
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_one_vendor')">Get Accounts of Specific Vendor</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_one_customer')">Get Accounts of Specific Customer</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('get_one_employee')">Get Accounts of Specific Employee</button>
+	</div>
 	
-	<h1> Get Specific Data </h1>
-	<button onclick="set_visibility('get_transactions_for_account')">Get transactions for account</button>
-	<button onclick="set_visibility('get_salary_for_employee')">Get salary for employee</button>
-	<button onclick="set_visibility('get_advance_for_employee')">Get advance for employee</button>
-	<button onclick="set_visibility('get_allowance_for_employee')">Get allowance for an employee</button>
-	<button onclick="set_visibility('get_attendance_for_employee')">Get attendance for an employee</button>
-	<button onclick="set_visibility('wage_for_employee')">Get wage for an employee</button>
 	
 
-	<h1> Insert Data </h1>
-	<button onclick="set_visibility('new_member')">Add New Member</button>
-	<button onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
-	<button onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
-	<button onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
-	<button onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
-	<button onclick="set_visibility('insert_stock')">Insert Stock</button>
-	<button onclick="set_visibility('del_stock')">Delete Stock Item</button>
+	<h1 style="text-align:center;margin-top:50px;"> Insert Data </h1>
+	<div style="text-align:center">
+	<button type="button" class="btn btn-outline" onclick="set_visibility('new_member')">Add New Member</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_advance_for_employee')">Insert advance</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_attendance_for_employee')">Insert attendance for an employee</button>	
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_allowance_for_employee')">Insert allowance for an employee</button>	
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_transaction')">Insert a Transaction</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('insert_stock')">Insert Stock</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('del_stock')">Delete Stock Item</button>
+	<button type="button" class="btn btn-outline" onclick="set_visibility('add_orders')">Place Order</button>
+	</div>
 
 	<div id="form">
 		<!-- Case 2  -->
@@ -77,7 +96,7 @@
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
 
-			<button type="button" onclick="form_get('/salary','get_salary_for_employee')">
+			<button type="button" onclick="form_get('/wage','get_salary_for_employee')">
 				Get Salary</button>
 
 		</form>
@@ -86,7 +105,8 @@
 		<form id="get_advance_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/advance','get_advance_by_employee')">
+
+			<button type="button" onclick="form_get('/get_advance','get_advance_for_employee')">
 				Get Advance</button>
 		</form>
 
@@ -135,6 +155,30 @@
 				Get Attendance</button>
 		</form>
 
+		<!--Accounts of One Vendor -->
+		<form id="get_one_vendor" style="display: none;">
+			<label for="v_id">Vendor ID: </label>
+			<input type="text" id="v_id" name="vendor_id">
+			<button type="button" onclick="form_get('/one_vendor','get_one_vendor')">
+				Get Account</button>
+		</form>
+
+		<!--Accounts of One Customer -->
+		<form id="get_one_customer" style="display: none;">
+			<label for="c_id">Customer ID: </label>
+			<input type="text" id="c_id" name="customer_id">
+			<button type="button" onclick="form_get('/one_customer','get_one_customer')">
+				Get Account</button>
+		</form>
+
+		<!--Accounts of One Employee -->
+		<form id="get_one_employee" style="display: none;">
+			<label for="e_id">Employee ID: </label>
+			<input type="text" id="e_id" name="employee_id">
+			<button type="button" onclick="form_get('/one_employee','get_one_employee')">
+				Get Account</button>
+		</form>
+
 
 		<!--apply for advance-->
 		<form id="insert_advance_for_employee" style="display: none;">
@@ -168,41 +212,6 @@
 			<button type="button" onclick="form_post('/allowance','insert_allowance_for_employee')">
 				Insert Allowance</button>
 		</form>
-
-		<!--insert attendence-->
-	<!--	<form id="insert_attendence_for_employee" style="display: none;">
-			
-			<br>
-			<label for="e_id">Employee ID</label>
-			<input type="text" id="e_id" name="employee_id">
-			
-			<br>
-			
-			<br>
-			<label for="at_date">Date</label>
-			<input type="date" id="at_date" name="date"><br><br>
-
-			<br>
-			<label for="at_time_in">Start Time</label>
-			<input type="time" id="at_time_in" name="time_in"><br><br>
-			
-			<br>
-			<label for="at_time_out">Leave Time</label>
-			<input type="time" id="at_time_out" name="time_out"><br><br>
-
-			<br>
-			<label for="at_leave">Leave</label>
-			<input type="checkbox" id="at_leave" name="leave", value="Yes"><br><br>
-			
-			<br>
-			<label for="at_hours">Break Hours</label>
-			<input type="text" id="at_hours" name="break_hours"><br><br>
-
-
-			<button type="button" onclick="form_post('/advance','insert_attendence_for_employee')">
-				Insert Attendance</button>
-		</form>
-	-->
 
 		<!-- Case 21 -->
 		<form id="new_member" style="display: none;">
@@ -261,6 +270,9 @@
 		<!--insert Stock-->
 		<form id="insert_stock" style="display: none;">
 
+			<label for="own">Enter Owner ID: </label>
+			<input type="text" id="own" name="owner"><br><br>
+
 			<label for="quant">Enter Quantity: </label>
 			<input type="text" id="quant" name="quantity"><br><br>
 
@@ -271,13 +283,13 @@
 			<input type="text" id="t_weight" name="total_weight"><br><br>
 
 			<label for="recieve_date">Recieving Date: </label>
-			<input type="date" id="recieve_date" name="rec_date"><br><br>
+			<input type="date" id="recieve_date" name="received_date"><br><br>
 
 			<label for="us_date">Use Date: </label>
 			<input type="date" id="us_date" name="use_date"><br><br>
 
 			<label for="stock_type">Stock Type: </label>
-			<input type="text" id="stock_type" name="typ"><br><br>
+			<input type="text" id="stock_type" name="type"><br><br>
 
 			<button type="button" onclick="form_post('/add_stock','insert_stock')">
 				Insert Stock</button>
@@ -287,7 +299,7 @@
 		<form id="wage_for_employee" style="display: none;">
 			<label for="e_id">Employee ID</label>
 			<input type="text" id="e_id" name="employee_id">
-			<button type="button" onclick="form_get('/wage','wage_for_employee')">
+			<button type="button" onclick="form_get('/get_wage','wage_for_employee')">
 				Get Wage</button>
 		</form>
 
@@ -299,8 +311,34 @@
 			<button type="button" onclick="form_post('/delete_stock','del_stock')">
 				Delete Stock</button>
 		</form>
+        
+		<!-- Place order-->
+		<form id="add_orders" style="display: none;">
+			
+			<label for="c_id">Customer ID: </label>
+			<input type="text" id="c_id" name="customer_id"><br><br> 
+
+			<label for="v_id">Vendor ID: </label>
+			<input type="text" id="v_id" name="vendor_id"><br><br>
+
+			<label for="amt">Amount: </label>
+			<input type="text" id="amt" name="amount"><br><br>
+
+			<label for="qty"> Quantity: </label>
+			<input type="text" id="qty" name="quantity"><br><br>
+
+			<label for="i_name"> Item Name: </label>
+			<input type="text" id="i_name" name="item_name"><br><br>
+
+			<label for="date_now">Date</label>
+			<input type="date" id="date_now" name="date"><br><br>
+
+			<button type="button" onclick="form_post('/addOrder','add_orders')">
+				Place Order</button>
+		</form>
+
 	</div>
-	<div id="output"></div>
+	<div id="output"> </div>
 </body>
 
 </html>
