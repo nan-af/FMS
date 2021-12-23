@@ -82,7 +82,6 @@ async def attendance():
         select * from attendance"""))
     return json2html.convert(list(attendance))
 
-
 # Case 8: view employee hourly wage DONE
 @app.get("/get_wage")
 async def salary(employee_id):
@@ -99,7 +98,7 @@ async def salary(employee_id):
 async def advance(employee_id):
     with engine.begin() as con:
         advance = con.execute(text("""
-        select amount from transactions full outer join advance on transaction_id = tr_id
+        select employee_id, amount, tr_date from transactions right outer join advance on transaction_id = tr_id
         where from_account = :emp_id
         """), emp_id=employee_id)
     return json2html.convert(list(advance))
@@ -157,7 +156,7 @@ async def get_allowance_by_employee(employee_id):
     with engine.begin() as con:
         allowance_table = con.execute(text("""
         select type, employee_id, transaction_id, amount
-        from allowance full outer join transactions on transaction_id = tr_id
+        from allowance left outer join transactions on transaction_id = tr_id
         where employee_id = :e_id
         """), e_id = employee_id)
     return json2html.convert(json=list(allowance_table))
@@ -248,21 +247,31 @@ async def remove_stock(stock_ID=Form(...)):
         """), stk_id=stock_ID)
     return "Stock deleted"
 
-
-# 19 calculate employee wage income +/- overtime/undertime DONE
+# 19 calculate employee wage income +/- overtime/undertime
 @app.get("/wage")
 async def wage(employee_id):
     with engine.begin() as con:
-        wage = con.execute(text("""
+        wage = list(con.execute(text("""
         select hourly_wage from employee
         where employee_id = :emp_id
-        """), emp_id=employee_id)
-        time_put = con.execute(text("""
-        select (time_out - time_in - break_hours) as time
+        """), emp_id=employee_id))
+        wage = list(wage[0])
+        time_put = list(con.execute(text("""
+        select sum(time_out - time_in)
         from attendance
         where employee_id = :emp_id
-        """), emp_id=employee_id)
-        calculated_wage = wage * time_put
+        """), emp_id=employee_id))
+        time_put = list(time_put[0])
+        break_hours = list(con.execute(text("""
+        select sum(break_hours)
+        from attendance
+        where employee_id = :emp_id
+        """), emp_id=employee_id))
+        break_hours = list(break_hours[0])
+        break_hours = break_hours[0]
+        difference = int(time_put[0].total_seconds())/3600
+        difference -= int(break_hours)
+        calculated_wage = int(wage[0]) * difference
     return calculated_wage
 
 # 21 insert a transaction DONE
@@ -415,3 +424,19 @@ async def get_one_employee(employee_id):
         where account_id = (select * from acc_id);
         """), a_id=employee_id)
     return json2html.convert(json=list(txns))
+
+# Case 27: view ALL employee advances DONE
+@app.get("/all_advance")
+async def all_advance_taken():
+    with engine.begin() as con:
+        adv = con.execute(text("""
+        select * from advance"""))
+    return json2html.convert(list(adv))
+
+# Case 28: view ALL employee allowances DONE
+@app.get("/all_allowance")
+async def all_allow_taken():
+    with engine.begin() as con:
+        adv = con.execute(text("""
+        select * from allowance"""))
+    return json2html.convert(list(adv))
