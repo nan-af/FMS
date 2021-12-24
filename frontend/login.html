@@ -1,20 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>FMS Login</title>
+  <meta charset="UTF-8">
+  <title>FMS Login</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    function form_post(path, id) {
+      axios.post(path, new FormData(document.getElementById(id)))
+        .then(res => {
+          console.log(res.data)
+          // res_data = JSON.parse(res.data)
+
+          if ("access_token" in res.data) {
+            sessionStorage.setItem("Authorization", (res.data["token_type"] + " " + res.data["access_token"]))
+            document.getElementById('output').innerHTML = "Login successful!"
+            window.location.href = "/"
+          } else {
+            document.getElementById('output').innerHTML = res.data["error"]
+          }
+        })
+        .catch(err => console.log(err))
+    }
+  </script>
 </head>
 
 
 <body bgcolor=#F2F4F4>
-<form action="/form_login" method="post">
-  <h2>Username:
-  <input type="text" name='Username'><br>
-  <br>Password:
-  <input type=Password name='Password'><br>
-<input type="submit" value="Login"></h2>
-</form>
+  <form id="login_form">
+    <h2>
+      Username:
+      <input type="text" name='username'><br>
+      <br>
+      Password:
+      <input type=Password name='password'><br>
+      <button type="button" onclick="form_post('/token','login_form')">Login</button>
+    </h2>
+  </form>
 
+  <h2>
+    <div id="output"></div>
+  </h2>
 
 </body>
+
 </html>

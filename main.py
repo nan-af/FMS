@@ -1,14 +1,48 @@
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.param_functions import Form
 from fastapi.responses import HTMLResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from json2html import *
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
 app = FastAPI()
 engine = create_engine(Path("db_connection").read_text(), echo=True)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
+
+
+@app.get("/login")
+async def login():
+    return HTMLResponse(Path("frontend/login.html").read_text())
+
+
+@app.post("/token")
+async def token(form_data: OAuth2PasswordRequestForm = Depends()):
+    users = {
+        'admin': {
+            'username': 'admin',
+            'password': 'adminpass',
+            'role': 'admin'
+        },
+        'manager': {
+            'username': 'manager',
+            'password': 'managerpass',
+            'role': 'manager'
+        },
+        'accountant': {
+            'username': 'accountant',
+            'password': 'accountantpass',
+            'role': 'accountant'
+        }
+    }
+
+    if user := users.get(form_data.username):
+        if form_data.password == user['password']:
+            return {"access_token": form_data.username+form_data.password, "token_type": "Bearer"}
+
+    return {'error': 'Invalid username and/or password'}
 
 
 @app.get("/")
