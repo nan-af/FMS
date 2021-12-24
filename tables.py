@@ -232,11 +232,10 @@ with engine.connect() as con:
         on update cascade
     )"""))
 
-
     # creates Users table
     con.execute(text("""
-    create users(
+    create table users(
         username varchar(30) primary key,
         password varchar(30),
-        type varchar CHECK (type in ('Accountant', 'Manager', 'Admin'))
+        type varchar CHECK (type in ('accountant', 'manager', 'admin'))
     )"""))

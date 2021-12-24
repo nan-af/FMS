@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from json2html import *
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
+import json
 
 app = FastAPI()
 engine = create_engine(Path("db_connection").read_text(), echo=True)
@@ -20,23 +21,12 @@ async def login():
 
 @app.post("/token")
 async def token(form_data: OAuth2PasswordRequestForm = Depends()):
-    users = {
-        'admin': {
-            'username': 'admin',
-            'password': 'adminpass',
-            'role': 'admin'
-        },
-        'manager': {
-            'username': 'manager',
-            'password': 'managerpass',
-            'role': 'manager'
-        },
-        'accountant': {
-            'username': 'accountant',
-            'password': 'accountantpass',
-            'role': 'accountant'
-        }
-    }
+    with engine.begin() as con:
+        users = con.execute(text('''
+        select * from users'''))
+
+    users = [x._asdict() for x in users]
+    users = {x['username']: x for x in users}
 
     if user := users.get(form_data.username):
         if form_data.password == user['password']:
