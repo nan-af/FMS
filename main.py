@@ -142,16 +142,16 @@ async def advance(employee_id):
 # Case 10: insert employee attendance DONE
 @app.post("/insert_attendance")
 async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
-    # with engine.begin() as con:
-    z = (time_out-time_in)
-    # at = con.execute(text("""
-    # INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
-    # VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
-    # """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return z  # "Attendance record updated"
-
+    with engine.begin() as con:
+        at = con.execute(text("""
+        INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
+        VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
+        """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+    return "Attendance record updated"
 
 # Case 11: add advance DONE
+
+
 @app.post("/advance")
 async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
     with engine.begin() as con:
@@ -320,7 +320,7 @@ async def wage(employee_id):
     return calculated_wage
 
 
-# 21 insert a transaction DONE
+# 20 insert a transaction DONE
 @app.post("/transactions")
 async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...)):
     with engine.begin() as con:
@@ -339,7 +339,7 @@ async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), 
     return "Transactions record updated"
 
 
-# 22 create new customer/vendor/employee DONE
+# 21 create new customer/vendor/employee DONE
 @app.post("/create")
 async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(...), opening_balance=Form(...), hourly_wage=Form(...)):
     print(hourly_wage)
@@ -371,7 +371,7 @@ async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(.
         return {'error': 'Invalid type of person.'}
 
 
-# 20 view orders select * from orders where status <> completed
+# 22 view orders select * from orders where status <> completed
 @app.get("/orders")
 async def orders():
     with engine.begin() as con:
@@ -493,3 +493,37 @@ async def all_allow_taken():
         adv = con.execute(text("""
         select * from allowance"""))
     return json2html.convert(list(adv))
+
+
+# Case 29: Add user
+@app.post("/add_user")
+async def insert_user(username, password, type):
+    with engine.begin() as con:
+        tr = con.execute(text("""
+        INSERT INTO users (username, password, type)
+        VALUES (u_name, p_word, typ);
+        """), u_name=username, p_word=password, typ=type)
+    return "User Inserted !"
+
+
+# Case 30: delete user
+@app.post("/delete_user")
+async def delete_users(username):
+    with engine.begin() as con:
+        tr = con.execute(text("""
+        DELETE FROM users
+        WHERE username = u_name;
+        """), u_name=username)
+    return "User Deleted !"
+
+
+# Case 31: change password
+@app.post("/change_pass")
+async def change_password(username, new_pass):
+    with engine.begin() as con:
+        tr = con.execute(text("""
+        UPDATE users
+        SET password = n_pass
+        WHERE username = u_name;
+        """), u_name=username, n_pass=new_pass)
+    return "Password Updated !"
