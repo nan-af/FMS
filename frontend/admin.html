@@ -1,0 +1,101 @@
+<html>
+
+<head>
+	<title>FMS - ADMIN</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script>
+		function set_visibility(id) {
+			for (element of document.getElementById("form").getElementsByTagName('form')) {
+				console.log(element)
+				element.style.display = 'none'
+			}
+			document.getElementById(id).style.display = 'initial'
+		}
+		function form_get(path, id) {
+			axios.get(path, id ? { params: Object.fromEntries(new FormData(document.getElementById(id))) } : null)
+				.then(res => {
+					console.log(res.data)
+					document.getElementById('output').innerHTML = res.data
+				})
+				.catch(err => console.log(err))
+		}
+		function form_post(path, id) {
+			axios.post(path, new FormData(document.getElementById(id)))
+				.then(res => {
+					console.log(res.data)
+					document.getElementById('output').innerHTML = res.data
+				})
+				.catch(err => console.log(err))
+		}
+	</script>
+</head>
+
+<body style="background-color:rgb(225, 222, 245);">
+	<div class="jumbotron text-center" style="background-color:rgb(151, 137, 223);">
+		<h1 style="font-family: Arial">Factory Management System</h1>
+		<p style="font-family: Arial">Welcome to the factory's Admin portal</p>
+	  </div>
+
+    <div style="text-align:center">
+        <button type="button" class="btn btn-outline" onclick="set_visibility('ad_user')">Add New User</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('del_user')">Delete User</button>
+		<button type="button" class="btn btn-outline" onclick="set_visibility('update_pass')">Change Password</button>
+    </div>
+
+    <div id="form">
+    <form id="ad_user" style="display: none;">
+
+        <label for="position">Choose Position</label>
+        <select name="type" id="ad_user">
+            <option value="Accountant">Accountant</option>
+            <option value="Manager">Manager</option>
+            <option value="Admin">Admin</option>
+        </select>
+        <br>
+        <br>
+
+        <label for="u_name">Enter Username:</label>
+        <input type="text" id="u_name" name="username">
+        <br>
+        <br>
+
+        <label for="pword">Enter Password:</label>
+        <input type="password" id="pname" name="password">
+        <br>
+        <br>
+        <button type="button" onclick="form_post('/add_user','ad_user')">
+            Add Person</button>		
+    </form>
+
+    
+    <form id="del_user" style="display: none;">
+
+        <label for="uname">Enter Username: </label>
+        <input type="text" id="uname" name="username">
+        <br>
+
+        <button type="button" onclick="form_post('/delete_user','del_user')">
+            Delete</button>
+    </form>
+
+    <form id="update_pass" style="display: none;">
+
+        <label for="uname">Enter Username: </label>
+        <input type="text" id="uname" name="username">
+        <br>
+        <br>
+
+        <label for="pass">Enter New Password: </label>
+        <input type="password" id="pass" name="password">
+        <br>
+
+        <button type="button" onclick="form_post('/change_pass','update_pass')">
+            Change Password</button>
+    </form>
+    </div>x
+        <div id="output"> 
+    </div>
+</body>
+
+</html>

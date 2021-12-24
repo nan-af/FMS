@@ -238,5 +238,5 @@ with engine.connect() as con:
     create users(
         username varchar(30) primary key,
         password varchar(30),
-        type varchar CHECK (type in ('Admin', 'Manager'))
+        type varchar CHECK (type in ('Accountant', 'Manager', 'Admin'))
     )"""))
