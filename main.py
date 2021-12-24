@@ -82,6 +82,7 @@ async def attendance():
         select * from attendance"""))
     return json2html.convert(list(attendance))
 
+
 # Case 8: view employee hourly wage DONE
 @app.get("/get_wage")
 async def salary(employee_id):
@@ -103,16 +104,18 @@ async def advance(employee_id):
         """), emp_id=employee_id)
     return json2html.convert(list(advance))
 
+
 # Case 10: insert employee attendance DONE
 @app.post("/insert_attendance")
 async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
     # with engine.begin() as con:
-        z = (time_out-time_in)
-        # at = con.execute(text("""
-        # INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
-        # VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
-        # """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return z #"Attendance record updated"
+    z = (time_out-time_in)
+    # at = con.execute(text("""
+    # INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
+    # VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
+    # """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+    return z  # "Attendance record updated"
+
 
 # Case 11: add advance DONE
 @app.post("/advance")
@@ -151,6 +154,7 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
 
     return "Advance updated"
 
+
 # case 12: Get employee allowance DONE
 @app.get("/allowance")
 async def get_allowance_by_employee(employee_id):
@@ -159,8 +163,9 @@ async def get_allowance_by_employee(employee_id):
         select type, employee_id, transaction_id, amount
         from allowance left outer join transactions on transaction_id = tr_id
         where employee_id = :e_id
-        """), e_id = employee_id)
+        """), e_id=employee_id)
     return json2html.convert(json=list(allowance_table))
+
 
 # case 13: Insert employee allowance DONE
 @app.post('/allowance')
@@ -194,8 +199,9 @@ async def insert_employee_allowance(employee_id=Form(...), amount=Form(...), all
         )
         insert into allowance (transaction_id, employee_id,type)
         values ((select * from tr_id), :e_id, :a_type)
-        '''), e_id=employee_id, amt=amount, date=date,a_type = allowance_type)
-        return "Allowances record updated successfully"    
+        '''), e_id=employee_id, amt=amount, date=date, a_type=allowance_type)
+        return "Allowances record updated successfully"
+
 
 # case 14: get employee attendance DONE
 @app.get("/get_attendance")
@@ -208,6 +214,7 @@ async def get_attendance_by_employee(employee_id):
         """), e_id=employee_id)
     return json2html.convert(json=list(txns))
 
+
 # case 15: view stock easy, select * from stock DONE
 @app.get("/stock")
 async def stock():
@@ -215,6 +222,7 @@ async def stock():
         stock = con.execute(text("""
         select * from stock """))
     return json2html.convert(list(stock))
+
 
 # Case 16: View customer accounts easy, select * from accounts DONE
 @app.get("/customer_accounts")
@@ -227,9 +235,10 @@ async def customer_accounts():
         """))  # , customers=getcustomers())
     return json2html.convert(list(accounts))
 
+
 # 17 add new item in inventory update stock DONE
 @app.post("/add_stock")
-async def update_stock( owner=Form(...), quantity=Form(...), location=Form(...), total_weight=Form(...), received_date=Form(...), use_date=Form(...), type=Form(...)):
+async def update_stock(owner=Form(...), quantity=Form(...), location=Form(...), total_weight=Form(...), received_date=Form(...), use_date=Form(...), type=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO stock (owner, quantity, location, total_weight, received_date, use_date, type)
@@ -247,6 +256,7 @@ async def remove_stock(stock_ID=Form(...)):
        		where stock_ID = :stk_id
         """), stk_id=stock_ID)
     return "Stock deleted"
+
 
 # 19 calculate employee wage income +/- overtime/undertime
 @app.get("/wage")
@@ -274,6 +284,7 @@ async def wage(employee_id):
         difference -= int(break_hours)
         calculated_wage = int(wage[0]) * difference
     return calculated_wage
+
 
 # 21 insert a transaction DONE
 @app.post("/transactions")
@@ -325,6 +336,7 @@ async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(.
     else:
         return {'error': 'Invalid type of person.'}
 
+
 # 20 view orders select * from orders where status <> completed
 @app.get("/orders")
 async def orders():
@@ -333,21 +345,22 @@ async def orders():
         select * from orders """))
     return json2html.convert(list(orders))
 
+
 # Case 23: place an order
 @app.post("/addOrder")
-async def orders(customer_id=Form(...),vendor_id=Form(...), amount=Form(...), quantity=Form(...), item_name=Form(...), date=Form(...)):
+async def orders(customer_id=Form(...), vendor_id=Form(...), amount=Form(...), quantity=Form(...), item_name=Form(...), date=Form(...)):
     with engine.begin() as con:
         c_id_id = list(con.execute(text('''
             select account_id from customer
             where customer_id = :c_id
-        '''), c_id = customer_id))
+        '''), c_id=customer_id))
         c_id_id = list(c_id_id[0])
         c_id_id = int(c_id_id[0])
 
         v_id_id = list(con.execute(text('''
             select account_id from vendor
             where vendor_id = :v_id
-        '''), v_id = vendor_id))
+        '''), v_id=vendor_id))
         v_id_id = list(v_id_id[0])
         v_id_id = int(v_id_id[0])
         con.execute(text('''
@@ -375,7 +388,8 @@ async def orders(customer_id=Form(...),vendor_id=Form(...), amount=Form(...), qu
         '''), c_id_id=c_id_id, v_id_id=v_id_id, c_id=customer_id, v_id=vendor_id, amt=amount, quantity=quantity, item_name=item_name, date=date)
     return "Order Added"
 
-#Case 24: Get Account Details of One Vendor: 
+
+# Case 24: Get Account Details of One Vendor:
 @app.get("/one_vendor")
 async def get_one_vendor(vendor_id):
     print(vendor_id)
@@ -392,7 +406,8 @@ async def get_one_vendor(vendor_id):
         """), a_id=vendor_id)
     return json2html.convert(json=list(txns))
 
-#Case 25: Get Account Details of One Customer: 
+
+# Case 25: Get Account Details of One Customer:
 @app.get("/one_customer")
 async def get_one_customer(customer_id):
     print(customer_id)
@@ -409,7 +424,8 @@ async def get_one_customer(customer_id):
         """), a_id=customer_id)
     return json2html.convert(json=list(txns))
 
-#Case 26: Get Account Details of One Employee: 
+
+# Case 26: Get Account Details of One Employee:
 @app.get("/one_employee")
 async def get_one_employee(employee_id):
     print(employee_id)
@@ -426,6 +442,7 @@ async def get_one_employee(employee_id):
         """), a_id=employee_id)
     return json2html.convert(json=list(txns))
 
+
 # Case 27: view ALL employee advances DONE
 @app.get("/all_advance")
 async def all_advance_taken():
@@ -433,6 +450,7 @@ async def all_advance_taken():
         adv = con.execute(text("""
         select * from advance"""))
     return json2html.convert(list(adv))
+
 
 # Case 28: view ALL employee allowances DONE
 @app.get("/all_allowance")
