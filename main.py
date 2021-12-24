@@ -440,3 +440,34 @@ async def all_allow_taken():
         adv = con.execute(text("""
         select * from allowance"""))
     return json2html.convert(list(adv))
+
+# Case 29: Add user
+@app.post("/add_user")
+async def insert_user(username, password, type):
+    with engine.begin() as con:
+        tr = con.execute(text("""
+        INSERT INTO users (username, password, type)
+        VALUES (u_name, p_word, typ);
+        """), u_name=username, p_word=password, typ=type)
+    return "User Inserted !"
+
+# Case 30: delete user
+@app.post("/delete_user")
+async def delete_users(username):
+    with engine.begin() as con:
+        tr = con.execute(text("""
+        DELETE FROM users
+        WHERE username = u_name;
+        """), u_name=username)
+    return "User Deleted !"
+
+# Case 31: change password
+@app.post("/change_pass")
+async def change_password(username, new_pass):
+    with engine.begin() as con:
+        tr = con.execute(text("""
+        UPDATE users
+        SET password = n_pass
+        WHERE username = u_name;
+        """), u_name=username, n_pass=new_pass)
+    return "Password Updated !"
