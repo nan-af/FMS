@@ -231,3 +231,12 @@ with engine.connect() as con:
         references stock(stock_id)
         on update cascade
     )"""))
+
+
+    # creates Users table
+    con.execute(text("""
+    create users(
+        username varchar(30) primary key,
+        password varchar(30),
+        type varchar CHECK (type in ('Admin', 'Manager'))
+    )"""))
