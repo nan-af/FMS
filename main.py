@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
 app = FastAPI()
-engine = create_engine(Path("db_connection").read_text(), echo=True)
+engine = create_engine(os.getenv("db_connection"), echo=True)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
 
 users_cache = dict()
