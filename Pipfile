@@ -7,7 +7,6 @@ name = "pypi"
 fastapi = {extras = ["all"], version = "*"}
 sqlalchemy = "*"
 fastapi-sqlalchemy = "*"
-psycopg2 = "*"
 json2html = "*"
 html-to-json = "*"
 psycopg2-binary = "*"
