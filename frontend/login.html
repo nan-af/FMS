@@ -15,11 +15,7 @@
             sessionStorage.setItem("Authorization", (res.data["token_type"] + " " + res.data["access_token"]))
             document.getElementById('output').innerHTML = "Login successful!"
 
-            if (JSON.parse(res.data["access_token"])['type'] === 'admin') {
-              window.location.href = "/admin"
-            } else {
-              window.location.href = "/"
-            }
+            window.location.href = res.data["redir_to"]
           } else {
             document.getElementById('output').innerHTML = res.data["error"]
           }

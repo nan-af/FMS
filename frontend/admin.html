@@ -14,8 +14,10 @@
         }
         function form_get(path, id) {
             axios.get(path,
-                id ? { params: Object.fromEntries(new FormData(document.getElementById(id))) } : null,
-                { headers: { 'Authorization': sessionStorage.getItem('Authorization') } })
+                {
+                    params: id ? Object.fromEntries(new FormData(document.getElementById(id))) : null,
+                    headers: { 'Authorization': sessionStorage.getItem('Authorization') }
+                })
                 .then(res => {
                     console.log(res.data)
                     document.getElementById('output').innerHTML = res.data
@@ -24,8 +26,10 @@
         }
         function form_post(path, id) {
             axios.post(path,
-                new FormData(document.getElementById(id)),
-                { headers: { 'Authorization': sessionStorage.getItem('Authorization') } })
+                {
+                    params: id ? Object.fromEntries(new FormData(document.getElementById(id))) : null,
+                    headers: { 'Authorization': sessionStorage.getItem('Authorization') }
+                })
                 .then(res => {
                     console.log(res.data)
                     document.getElementById('output').innerHTML = res.data

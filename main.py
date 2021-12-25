@@ -39,7 +39,10 @@ async def login():
 async def token(form_data: OAuth2PasswordRequestForm = Depends()):
     if user := users_cache.get(form_data.username):
         if form_data.password == user['password']:
-            return {"access_token": json.dumps(user), "token_type": "Bearer"}
+            return {
+                "access_token": user['username'], "token_type": "Bearer",
+                "redir_to": "/admin" if user['type'] == 'admin' else "/"
+            }
 
     return {'error': 'Invalid username and/or password'}
 
