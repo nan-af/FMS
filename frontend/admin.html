@@ -26,8 +26,8 @@
         }
         function form_post(path, id) {
             axios.post(path,
+                new FormData(document.getElementById(id)),
                 {
-                    params: id ? Object.fromEntries(new FormData(document.getElementById(id))) : null,
                     headers: { 'Authorization': sessionStorage.getItem('Authorization') }
                 })
                 .then(res => {
