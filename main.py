@@ -502,8 +502,11 @@ async def root():
 
 
 @app.get("/users")
-async def list_users():
-    return json2html.convert(users_cache)
+async def list_users(token=Depends(oauth2_scheme)):
+    if users_cache[token]['type'] == 'admin':
+        return json2html.convert(users_cache)
+    else:
+        return 'Unauthorised'
 
 
 # Case 29: Add user
