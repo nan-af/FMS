@@ -7,7 +7,7 @@ assert input("""ARE YOU EXTREMELY SURE THAT YOU WANT TO DELETE ALL TABLES?
 Type "yes" to continue: """) == "yes"
 
 engine = create_engine(Path("db_connection").read_text(), echo=True)
-with engine.connect() as con:
+with engine.begin() as con:
     con.execute(text("""
     DROP TABLE IF EXISTS public.accounts CASCADE;
 
@@ -32,4 +32,6 @@ with engine.connect() as con:
     DROP TABLE IF EXISTS public.vendor CASCADE;
 
     DROP TABLE IF EXISTS public.will_use CASCADE;
+
+    DROP TABLE IF EXISTS public.users CASCADE;
     """))

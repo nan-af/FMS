@@ -1,100 +1,111 @@
 <html>
 
 <head>
-	<title>FMS - ADMIN</title>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-	<script>
-		function set_visibility(id) {
-			for (element of document.getElementById("form").getElementsByTagName('form')) {
-				console.log(element)
-				element.style.display = 'none'
-			}
-			document.getElementById(id).style.display = 'initial'
-		}
-		function form_get(path, id) {
-			axios.get(path, id ? { params: Object.fromEntries(new FormData(document.getElementById(id))) } : null)
-				.then(res => {
-					console.log(res.data)
-					document.getElementById('output').innerHTML = res.data
-				})
-				.catch(err => console.log(err))
-		}
-		function form_post(path, id) {
-			axios.post(path, new FormData(document.getElementById(id)))
-				.then(res => {
-					console.log(res.data)
-					document.getElementById('output').innerHTML = res.data
-				})
-				.catch(err => console.log(err))
-		}
-	</script>
+    <title>FMS - ADMIN</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script>
+        function set_visibility(id) {
+            for (element of document.getElementById("form").getElementsByTagName('form')) {
+                console.log(element)
+                element.style.display = 'none'
+            }
+            document.getElementById(id).style.display = 'initial'
+        }
+        function form_get(path, id) {
+            axios.get(path,
+                {
+                    params: id ? Object.fromEntries(new FormData(document.getElementById(id))) : null,
+                    headers: { 'Authorization': sessionStorage.getItem('Authorization') }
+                })
+                .then(res => {
+                    console.log(res.data)
+                    document.getElementById('output').innerHTML = res.data
+                })
+                .catch(err => console.log(err))
+        }
+        function form_post(path, id) {
+            axios.post(path,
+                {
+                    params: id ? Object.fromEntries(new FormData(document.getElementById(id))) : null,
+                    headers: { 'Authorization': sessionStorage.getItem('Authorization') }
+                })
+                .then(res => {
+                    console.log(res.data)
+                    document.getElementById('output').innerHTML = res.data
+                })
+                .catch(err => console.log(err))
+        }
+    </script>
 </head>
 
 <body style="background-color:rgb(225, 222, 245);">
-	<div class="jumbotron text-center" style="background-color:rgb(151, 137, 223);">
-		<h1 style="font-family: Arial">Factory Management System</h1>
-		<p style="font-family: Arial">Welcome to the factory's Admin portal</p>
-	  </div>
+    <div class="jumbotron text-center" style="background-color:rgb(151, 137, 223);">
+        <h1 style="font-family: Arial">Factory Management System</h1>
+        <p style="font-family: Arial">Welcome to the factory's Admin portal</p>
+    </div>
 
     <div style="text-align:center">
-        <button type="button" class="btn btn-outline" onclick="set_visibility('ad_user')">Add New User</button>
-		<button type="button" class="btn btn-outline" onclick="set_visibility('del_user')">Delete User</button>
-		<button type="button" class="btn btn-outline" onclick="set_visibility('update_pass')">Change Password</button>
+        <button type="button" class="btn btn-outline" onclick="form_get('/users')">List users</button>
+        <button type="button" class="btn btn-outline" onclick="set_visibility('add_user')">Add New User</button>
+        <button type="button" class="btn btn-outline" onclick="set_visibility('del_user')">Delete User</button>
+        <button type="button" class="btn btn-outline" onclick="set_visibility('update_pass')">Change Password</button>
+        <button type="button" class="btn btn-outline"
+            onclick="sessionStorage.clear();window.location.href = '/login'">Logout</button>
     </div>
 
     <div id="form">
-    <form id="ad_user" style="display: none;">
+        <form id="add_user" style="display: none;">
 
-        <label for="position">Choose Position</label>
-        <select name="type" id="ad_user">
-            <option value="Accountant">Accountant</option>
-            <option value="Manager">Manager</option>
-            <option value="Admin">Admin</option>
-        </select>
-        <br>
-        <br>
+            <label for="position">Choose Position</label>
+            <select name="role" id="add_user">
+                <option value="accountant">Accountant</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+            </select>
+            <br>
+            <br>
 
-        <label for="u_name">Enter Username:</label>
-        <input type="text" id="u_name" name="username">
-        <br>
-        <br>
+            <label for="u_name">Enter Username:</label>
+            <input type="text" id="u_name" name="user_id">
+            <br>
+            <br>
 
-        <label for="pword">Enter Password:</label>
-        <input type="password" id="pname" name="password">
-        <br>
-        <br>
-        <button type="button" onclick="form_post('/add_user','ad_user')">
-            Add Person</button>		
-    </form>
+            <label for="pword">Enter Password:</label>
+            <input type="password" id="pname" name="user_pass">
+            <br>
+            <br>
+            <button type="button" onclick="form_post('/add_user','add_user')">
+                Add Person</button>
+        </form>
 
-    
-    <form id="del_user" style="display: none;">
 
-        <label for="uname">Enter Username: </label>
-        <input type="text" id="uname" name="username">
-        <br>
+        <form id="del_user" style="display: none;">
 
-        <button type="button" onclick="form_post('/delete_user','del_user')">
-            Delete</button>
-    </form>
+            <label for="uname">Enter Username: </label>
+            <input type="text" id="uname" name="username">
+            <br>
 
-    <form id="update_pass" style="display: none;">
+            <button type="button" onclick="form_post('/delete_user','del_user')">
+                Delete</button>
+        </form>
 
-        <label for="uname">Enter Username: </label>
-        <input type="text" id="uname" name="username">
-        <br>
-        <br>
+        <form id="update_pass" style="display: none;">
 
-        <label for="pass">Enter New Password: </label>
-        <input type="password" id="pass" name="password">
-        <br>
+            <label for="uname">Enter Username: </label>
+            <input type="text" id="uname" name="username">
+            <br>
+            <br>
 
-        <button type="button" onclick="form_post('/change_pass','update_pass')">
-            Change Password</button>
-    </form>
-    </div>x
-        <div id="output"> 
+            <label for="pass">Enter New Password: </label>
+            <input type="password" id="pass" name="password">
+            <br>
+
+            <button type="button" onclick="form_post('/change_pass','update_pass')">
+                Change Password</button>
+        </form>
+    </div>
+    <div id="output">
     </div>
 </body>
 
