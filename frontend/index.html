@@ -41,6 +41,11 @@
 		<p style="font-family: Arial">Welcome to the factory's main portal to manage all essential data</p>
 	</div>
 
+	<div style="text-align:center">
+		<button type="button" class="btn btn-outline"
+			onclick="sessionStorage.clear();window.location.href = '/login'">Logout</button>
+	</div>
+
 	<h1 style="text-align:center"> Get Overall Data </h1>
 	<div style="text-align:center">
 		<button type="button" class="btn btn-outline" onclick="form_get('/accounts')">Get All Accounts</button>

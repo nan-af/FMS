@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from fastapi import FastAPI, Depends
@@ -7,11 +8,26 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from json2html import *
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-import json
 
 app = FastAPI()
 engine = create_engine(Path("db_connection").read_text(), echo=True)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
+
+users_cache = dict()
+
+
+def update_users_cache():
+    with engine.begin() as con:
+        users = con.execute(text('''
+        select * from users'''))
+    users = [x._asdict() for x in users]
+    users = {x['username']: x for x in users}
+
+    global users_cache
+    users_cache = users
+
+
+update_users_cache()
 
 
 @app.get("/login")
@@ -21,16 +37,9 @@ async def login():
 
 @app.post("/token")
 async def token(form_data: OAuth2PasswordRequestForm = Depends()):
-    with engine.begin() as con:
-        users = con.execute(text('''
-        select * from users'''))
-
-    users = [x._asdict() for x in users]
-    users = {x['username']: x for x in users}
-
-    if user := users.get(form_data.username):
+    if user := users_cache.get(form_data.username):
         if form_data.password == user['password']:
-            return {"access_token": form_data.username+form_data.password, "token_type": "Bearer"}
+            return {"access_token": json.dumps(user), "token_type": "Bearer"}
 
     return {'error': 'Invalid username and/or password'}
 
@@ -139,9 +148,8 @@ async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(
         """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
     return "Attendance record updated"
 
+
 # Case 11: add advance DONE
-
-
 @app.post("/advance")
 async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
     with engine.begin() as con:
@@ -485,35 +493,48 @@ async def all_allow_taken():
     return json2html.convert(list(adv))
 
 
+@app.get("/admin")
+async def root():
+    return HTMLResponse(Path("frontend/admin.html").read_text())
+
+
+@app.get("/users")
+async def list_users():
+    return json2html.convert(users_cache)
+
+
 # Case 29: Add user
 @app.post("/add_user")
-async def insert_user(username, password, type):
+async def insert_user(user_id=Form(...), user_pass=Form(...), role=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         INSERT INTO users (username, password, type)
-        VALUES (u_name, p_word, typ);
-        """), u_name=username, p_word=password, typ=type)
+        VALUES (:u_name, :p_word, :typ);
+        """), u_name=user_id, p_word=user_pass, typ=role)
+    update_users_cache()
     return "User Inserted !"
 
 
 # Case 30: delete user
 @app.post("/delete_user")
-async def delete_users(username):
+async def delete_users(user_id=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         DELETE FROM users
-        WHERE username = u_name;
-        """), u_name=username)
+        WHERE username = :u_name;
+        """), u_name=user_id)
+    update_users_cache()
     return "User Deleted !"
 
 
 # Case 31: change password
 @app.post("/change_pass")
-async def change_password(username, new_pass):
+async def change_password(user_id=Form(...), new_pass=Form(...)):
     with engine.begin() as con:
         tr = con.execute(text("""
         UPDATE users
-        SET password = n_pass
-        WHERE username = u_name;
-        """), u_name=username, n_pass=new_pass)
+        SET password = :n_pass
+        WHERE username = :u_name;
+        """), u_name=user_id, n_pass=new_pass)
+    update_users_cache()
     return "Password Updated !"

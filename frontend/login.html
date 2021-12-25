@@ -10,12 +10,16 @@
       axios.post(path, new FormData(document.getElementById(id)))
         .then(res => {
           console.log(res.data)
-          // res_data = JSON.parse(res.data)
 
           if ("access_token" in res.data) {
             sessionStorage.setItem("Authorization", (res.data["token_type"] + " " + res.data["access_token"]))
             document.getElementById('output').innerHTML = "Login successful!"
-            window.location.href = "/"
+
+            if (JSON.parse(res.data["access_token"])['type'] === 'admin') {
+              window.location.href = "/admin"
+            } else {
+              window.location.href = "/"
+            }
           } else {
             document.getElementById('output').innerHTML = res.data["error"]
           }
