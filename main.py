@@ -1,4 +1,4 @@
-import json
+import time
 from pathlib import Path
 
 from fastapi import FastAPI, Depends
@@ -143,12 +143,51 @@ async def advance(employee_id):
 
 # Case 10: insert employee attendance DONE
 @app.post("/insert_attendance")
-async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
+async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(False), break_hours=Form(...)):
     with engine.begin() as con:
-        at = con.execute(text("""
-        INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
-        VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
-        """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
+        hours = (
+            time.mktime(time.strptime(time_out, '%H:%M'))
+            - time.mktime(time.strptime(time_in, '%H:%M'))
+        )/(60*60) - float(break_hours)
+
+        hourly_wage = con.execute(text('''
+        select hourly_wage from employee
+        where employee_id = :e_id'''), e_id=employee_id).first()[0]
+
+        amount = hours * int(hourly_wage)
+
+        con.execute(text('''
+        with acc_id as (
+            select account_id from employee
+            where employee_id = :e_id
+        )
+        
+        UPDATE accounts
+        SET closing_balance = closing_balance - :amt
+        WHERE account_id = (select * from acc_id);
+
+        UPDATE accounts
+        SET closing_balance = closing_balance + :amt
+        WHERE account_id = 1;
+
+        with tr_id as (
+            with acc_id as (
+                select account_id from employee
+                where employee_id = :e_id
+            )
+
+            insert into transactions (amount, tr_date, from_account, to_account)
+            values (:amt,
+                    :date,
+                    (select * from acc_id),
+                    1)
+            returning tr_id
+        )
+        
+        insert into attendance (transaction_id, employee_id, time_in, time_out, leave, break_hours)
+        values ((select * from tr_id), :e_id, :t_in, :t_out, :leave, :brk_hrs)
+        '''), amt=amount, e_id=employee_id, date=date, t_in=time_in, t_out=time_out, leave=leave, brk_hrs=break_hours)
+
     return "Attendance record updated"
 
 
@@ -294,31 +333,31 @@ async def remove_stock(stock_ID=Form(...)):
 
 
 # 19 calculate employee wage income +/- overtime/undertime
-@app.get("/wage")
-async def wage(employee_id):
-    with engine.begin() as con:
-        wage = list(con.execute(text("""
-        select hourly_wage from employee
-        where employee_id = :emp_id
-        """), emp_id=employee_id))
-        wage = list(wage[0])
-        time_put = list(con.execute(text("""
-        select sum(time_out - time_in)
-        from attendance
-        where employee_id = :emp_id
-        """), emp_id=employee_id))
-        time_put = list(time_put[0])
-        break_hours = list(con.execute(text("""
-        select sum(break_hours)
-        from attendance
-        where employee_id = :emp_id
-        """), emp_id=employee_id))
-        break_hours = list(break_hours[0])
-        break_hours = break_hours[0]
-        difference = int(time_put[0].total_seconds())/3600
-        difference -= int(break_hours)
-        calculated_wage = int(wage[0]) * difference
-    return calculated_wage
+# @app.get("/wage")
+# async def wage(employee_id):
+#     with engine.begin() as con:
+#         wage = list(con.execute(text("""
+#         select hourly_wage from employee
+#         where employee_id = :emp_id
+#         """), emp_id=employee_id))
+#         wage = list(wage[0])
+#         time_put = list(con.execute(text("""
+#         select sum(time_out - time_in)
+#         from attendance
+#         where employee_id = :emp_id
+#         """), emp_id=employee_id))
+#         time_put = list(time_put[0])
+#         break_hours = list(con.execute(text("""
+#         select sum(break_hours)
+#         from attendance
+#         where employee_id = :emp_id
+#         """), emp_id=employee_id))
+#         break_hours = list(break_hours[0])
+#         break_hours = break_hours[0]
+#         difference = int(time_put[0].total_seconds())/3600
+#         difference -= int(break_hours)
+#         calculated_wage = int(wage[0]) * difference
+#     return calculated_wage
 
 
 # 20 insert a transaction DONE
