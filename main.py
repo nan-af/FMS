@@ -179,7 +179,7 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...)):
             insert into transactions (amount, tr_date, from_account, to_account)
             values (:amt,
                     :date,
-                    :e_id,
+                    (select * from acc_id),
                     1)
             returning tr_id
         )
