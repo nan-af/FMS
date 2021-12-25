@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
 app = FastAPI()
-engine = create_engine(os.getenv("db_connection"), echo=True)
+engine = create_engine(os.getenv("db_connection"))
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
 
 users_cache = dict()
