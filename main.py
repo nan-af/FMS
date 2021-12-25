@@ -1,4 +1,4 @@
-import json
+import time
 from pathlib import Path
 
 from fastapi import FastAPI, Depends
@@ -61,10 +61,9 @@ async def accounts(token=Depends(oauth2_scheme)):
             select * from accounts
             order by account_id"""))
         return json2html.convert(json=list(accounts))
-        
+
     else:
         return 'Unauthorised'
-    
 
 
 # Case 2: view all transactions of a specific account DONE
@@ -78,10 +77,9 @@ async def txns_for_account(account_id, token=Depends(oauth2_scheme)):
             where from_account = :acc_id
             or to_account = :acc_id"""), acc_id=account_id)
         return json2html.convert(json=list(txns))
-        
+
     else:
         return 'Unauthorised'
-    
 
 
 # Case 3: view all transactions DONE
@@ -92,10 +90,9 @@ async def transactions(token=Depends(oauth2_scheme)):
             transactions = con.execute(text("""
             select * from transactions"""))
         return json2html.convert(json=list(transactions))
-        
+
     else:
         return 'Unauthorised'
-    
 
 
 # Case 4: view all employees DONE
@@ -105,9 +102,10 @@ async def employees(token=Depends(oauth2_scheme)):
         with engine.begin() as con:
             employees = con.execute(text("""
             select * from employee"""))
-        return json2html.convert(list(employees))      
+        return json2html.convert(list(employees))
     else:
         return 'Unauthorised'
+
 
 # Case 5: view all vendors DONE
 @app.get("/vendors")
@@ -117,10 +115,9 @@ async def vendors(token=Depends(oauth2_scheme)):
             vendors = con.execute(text("""
             select * from vendor"""))
         return json2html.convert(list(vendors))
-        
+
     else:
         return 'Unauthorised'
-    
 
 
 # Case 6: view all customers DONE
@@ -131,10 +128,9 @@ async def customers(token=Depends(oauth2_scheme)):
             customers = con.execute(text("""
             select * from customer"""))
         return json2html.convert(list(customers))
-        
+
     else:
         return 'Unauthorised'
-    
 
 
 # Case 7: view employee Attendance DONE
@@ -145,10 +141,9 @@ async def attendance(token=Depends(oauth2_scheme)):
             attendance = con.execute(text("""
             select * from attendance"""))
         return json2html.convert(list(attendance))
-        
+
     else:
         return 'Unauthorised'
-    
 
 
 # Case 8: view employee hourly wage DONE
@@ -161,10 +156,11 @@ async def salary(employee_id, token=Depends(oauth2_scheme)):
             where employee_id = :emp_id
             """), emp_id=employee_id)
         return json2html.convert(json=list(salary))
-        
+
     else:
         return 'Unauthorised'
-    
+
+
 # Case 9: get employee advance DONE
 @app.get("/get_advance")
 async def advance(employee_id, token=Depends(oauth2_scheme)):
@@ -181,19 +177,62 @@ async def advance(employee_id, token=Depends(oauth2_scheme)):
 
 # Case 10: insert employee attendance DONE
 @app.post("/insert_attendance")
-async def attendance(employee_id=Form(...), transaction_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(...), break_hours=Form(...)):
-    with engine.begin() as con:
-        at = con.execute(text("""
-        INSERT INTO attendance (employee_id, transaction_id, at_date, time_in, time_out, leave, break_hours)
-        VALUES (:employee_id, :transaction_id, :date, :time_in, :time_out, :leave, :break_hours);
-        """), employee_id=employee_id, transaction_id=transaction_id, date=date, time_in=time_in, time_out=time_out, leave=leave, break_hours=break_hours)
-    return "Attendance record updated"
+async def attendance(employee_id=Form(...), date=Form(...), time_in=Form(...), time_out=Form(...), leave=Form(False), break_hours=Form(...), token=Depends(oauth2_scheme)):
+    if users_cache[token]['type'] == 'accountant':
+        with engine.begin() as con:
+            hours = (
+                time.mktime(time.strptime(time_out, '%H:%M'))
+                - time.mktime(time.strptime(time_in, '%H:%M'))
+            )/(60*60) - float(break_hours)
+
+            hourly_wage = con.execute(text('''
+            select hourly_wage from employee
+            where employee_id = :e_id'''), e_id=employee_id).first()[0]
+
+            amount = hours * int(hourly_wage)
+
+            con.execute(text('''
+            with acc_id as (
+                select account_id from employee
+                where employee_id = :e_id
+            )
+            
+            UPDATE accounts
+            SET closing_balance = closing_balance - :amt
+            WHERE account_id = (select * from acc_id);
+
+            UPDATE accounts
+            SET closing_balance = closing_balance + :amt
+            WHERE account_id = 1;
+
+            with tr_id as (
+                with acc_id as (
+                    select account_id from employee
+                    where employee_id = :e_id
+                )
+
+                insert into transactions (amount, tr_date, from_account, to_account)
+                values (:amt,
+                        :date,
+                        (select * from acc_id),
+                        1)
+                returning tr_id
+            )
+            
+            insert into attendance (transaction_id, employee_id, time_in, time_out, leave, break_hours)
+            values ((select * from tr_id), :e_id, :t_in, :t_out, :leave, :brk_hrs)
+            '''), amt=amount, e_id=employee_id, date=date, t_in=time_in, t_out=time_out, leave=leave, brk_hrs=break_hours)
+
+        return "Attendance record updated"
+
+    else:
+        return 'Unauthorised'
 
 
 # Case 11: add advance DONE
 @app.post("/advance")
 async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...), token=Depends(oauth2_scheme)):
-    if users_cache[token]['type'] == 'accountant':    
+    if users_cache[token]['type'] == 'accountant':
         with engine.begin() as con:
             con.execute(text('''
             with acc_id as (
@@ -230,7 +269,6 @@ async def add_advance(employee_id=Form(...), amount=Form(...), date=Form(...), t
 
     else:
         return 'Unauthorised'
-    
 
 
 # case 12: Get employee allowance DONE
@@ -247,6 +285,7 @@ async def get_allowance_by_employee(employee_id, token=Depends(oauth2_scheme)):
 
     else:
         return 'Unauthorised'
+
 
 # case 13: Insert employee allowance DONE
 @app.post('/allowance')
@@ -303,7 +342,6 @@ async def get_attendance_by_employee(employee_id, token=Depends(oauth2_scheme)):
         return 'Unauthorised'
 
 
-
 # case 15: view stock easy, select * from stock DONE
 @app.get("/stock")
 async def stock(token=Depends(oauth2_scheme)):
@@ -329,7 +367,6 @@ async def customer_accounts(token=Depends(oauth2_scheme)):
         return json2html.convert(list(accounts))
     else:
         return 'Unauthorised'
-   
 
 
 # 17 add new item in inventory update stock DONE
@@ -361,39 +398,11 @@ async def remove_stock(stock_ID=Form(...), token=Depends(oauth2_scheme)):
         return 'Unauthorised'
 
 
-# 19 calculate employee wage income +/- overtime/undertime
-@app.get("/wage")
-async def wage(employee_id):
-    with engine.begin() as con:
-        wage = list(con.execute(text("""
-        select hourly_wage from employee
-        where employee_id = :emp_id
-        """), emp_id=employee_id))
-        wage = list(wage[0])
-        time_put = list(con.execute(text("""
-        select sum(time_out - time_in)
-        from attendance
-        where employee_id = :emp_id
-        """), emp_id=employee_id))
-        time_put = list(time_put[0])
-        break_hours = list(con.execute(text("""
-        select sum(break_hours)
-        from attendance
-        where employee_id = :emp_id
-        """), emp_id=employee_id))
-        break_hours = list(break_hours[0])
-        break_hours = break_hours[0]
-        difference = int(time_put[0].total_seconds())/3600
-        difference -= int(break_hours)
-        calculated_wage = int(wage[0]) * difference
-    return calculated_wage
-
-
 # 20 insert a transaction DONE
 @app.post("/transactions")
 async def transaction(amount=Form(...), date=Form(...), from_account=Form(...), to_account=Form(...), token=Depends(oauth2_scheme)):
     if users_cache[token]['type'] == 'accountant':
-    
+
         with engine.begin() as con:
             tr = con.execute(text("""
             INSERT INTO transactions (amount, tr_date, from_account, to_account)
@@ -444,7 +453,7 @@ async def create(role=Form(...), name=Form(...), address=Form(...), phone=Form(.
 
         else:
             return {'error': 'Invalid type of person.'}
-    
+
     else:
         return 'Unauthorised'
 
@@ -466,7 +475,7 @@ async def orders(token=Depends(oauth2_scheme)):
 @app.post("/addOrder")
 async def orders(customer_id=Form(...), vendor_id=Form(...), amount=Form(...), quantity=Form(...), item_name=Form(...), date=Form(...), token=Depends(oauth2_scheme)):
     if users_cache[token]['type'] == 'manager' or users_cache[token]['type'] == 'accountant':
-   
+
         with engine.begin() as con:
             c_id_id = list(con.execute(text('''
                 select account_id from customer
@@ -509,7 +518,6 @@ async def orders(customer_id=Form(...), vendor_id=Form(...), amount=Form(...), q
         return 'Unauthorised'
 
 
-
 # Case 24: Get Account Details of One Vendor:
 @app.get("/one_vendor")
 async def get_one_vendor(vendor_id, token=Depends(oauth2_scheme)):
@@ -530,7 +538,6 @@ async def get_one_vendor(vendor_id, token=Depends(oauth2_scheme)):
         return json2html.convert(json=list(txns))
     else:
         return 'Unauthorised'
-
 
 
 # Case 25: Get Account Details of One Customer:
@@ -576,6 +583,7 @@ async def get_one_employee(employee_id, token=Depends(oauth2_scheme)):
     else:
         return 'Unauthorised'
 
+
 # Case 27: view ALL employee advances DONE
 @app.get("/all_advance")
 async def all_advance_taken(token=Depends(oauth2_scheme)):
@@ -588,6 +596,7 @@ async def all_advance_taken(token=Depends(oauth2_scheme)):
     else:
         return 'Unauthorised'
 
+
 # Case 28: view ALL employee allowances DONE
 @app.get("/all_allowance")
 async def all_allow_taken(token=Depends(oauth2_scheme)):
@@ -599,6 +608,7 @@ async def all_allow_taken(token=Depends(oauth2_scheme)):
         return json2html.convert(list(adv))
     else:
         return 'Unauthorised'
+
 
 @app.get("/admin")
 async def root():
@@ -626,7 +636,6 @@ async def insert_user(user_id=Form(...), user_pass=Form(...), role=Form(...), to
             return "User Inserted !"
     else:
         return 'Unauthorised'
-    
 
 
 # Case 30: delete user
@@ -647,7 +656,7 @@ async def delete_users(user_id=Form(...), token=Depends(oauth2_scheme)):
 # Case 31: change password
 @app.post("/change_pass")
 async def change_password(user_id=Form(...), new_pass=Form(...), token=Depends(oauth2_scheme)):
-    if users_cache[token]['type'] == 'admin':    
+    if users_cache[token]['type'] == 'admin':
         with engine.begin() as con:
             tr = con.execute(text("""
             UPDATE users
