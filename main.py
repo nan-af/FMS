@@ -633,6 +633,8 @@ async def insert_user(user_id=Form(...), user_pass=Form(...), role=Form(...), to
             INSERT INTO users (username, password, type)
             VALUES (:u_name, :p_word, :typ);
             """), u_name=user_id, p_word=user_pass, typ=role)
+            
+            global users_cache
             update_users_cache()
             return "User Inserted !"
     else:
@@ -648,6 +650,8 @@ async def delete_users(user_id=Form(...), token=Depends(oauth2_scheme)):
             DELETE FROM users
             WHERE username = :u_name;
             """), u_name=user_id)
+            
+        global users_cache
         update_users_cache()
         return "User Deleted !"
     else:
@@ -664,6 +668,8 @@ async def change_password(user_id=Form(...), new_pass=Form(...), token=Depends(o
             SET password = :n_pass
             WHERE username = :u_name;
             """), u_name=user_id, n_pass=new_pass)
+            
+        global users_cache
         update_users_cache()
         return "Password Updated !"
     else:
